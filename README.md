@@ -30,6 +30,8 @@ Amazon Kinesis Data Analyitics makes it easy to process streaming data in real t
 
 ![Module 2 Architecture](images/module-2.png)
 
+In this scenario, you will leverage Amazon Kinesis Data Analytics, AWS Lambda, and Amazon DynamoDB.
+
 [Get Started on Module 2](module-2/README.md)
 
 ## Module 3 - Visualizing Metrics using CloudWatch Dashboards

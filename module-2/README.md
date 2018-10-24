@@ -2,11 +2,13 @@
 
 ## Introduction
 
-In this module, you will use CloudFormation to add a Kinesis Analytics application, Lambda function and two DynamoDB talbes.  You will then start the Kinesis Analytics application, update the SQL, add a destination, and connect the destination to the Lambda function.  
+In this module, you will use CloudFormation to add a Kinesis Analytics application, Lambda function and two DynamoDB tables.  You will then start the Kinesis Analytics application, update the SQL, add a destination, and connect the destination to the Lambda function.
 
 ## Architecture Overview of Module #2 Components
 
 ![module-2-diagram](../images/module-2.png)
+
+In this scenario, you will leverage Amazon Kinesis Data Analytics, AWS Lambda, and Amazon DynamoDB.
 
 ## 1. Deploy Processing Pipeline Components
 
