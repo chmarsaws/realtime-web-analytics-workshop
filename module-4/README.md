@@ -47,7 +47,7 @@ This code is just an example of what would be added to your measured website.  F
 <details>
 <summary><strong>Add the Metric to the DynamoDB Table (expand for details)</strong></summary><p>    
 
-The Lambda processing function reads from the DynamoDB Metric table to determine how to process metrics that are persisted to the MetricDetails table.  In this example you will add a metric that captures the average load time for all captured pages on the target website.  
+The Lambda processing function reads from the DynamoDB **stack-name**-Metric table to determine how to process metrics that are persisted to the MetricDetails table.  In this example you will add a metric that captures the average load time for all captured pages on the target website.  
 The DynamoDB table named **stack-name**-Metrics initially contains seven items representing different metrics.  Each item contains the following information is required for each metric type:
 *   **MetricType** - a primary partition key to identity the metric
 *   **AmendmentStrategy** - this is a field to indicate how to late arriving records for an existing event time. Valid values are [add | replace | replace_existing].  **add** combines the values of the existing item and the new item, **replace** replaces the metric in DynamoDB with the newly arrived item, **replace_existing** only replaces the matching metrics in the set of metrics in the item.  
