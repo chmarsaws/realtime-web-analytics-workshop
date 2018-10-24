@@ -6,6 +6,10 @@ Knowing what users are doing on your web sites in realtime gives you insights yo
 
 In this workshop we will build a cost optimized platform to capture web beacon traffic, analyze the traffic for interesting metrics, and display it on a customized dashboard.
 
+To get started with this fun and educational workshop, simply clone this repository and start on module 1 below:
+
+![Clone repository](images/clone-repo.png)
+
 ## Module 1 – Capturing Realtime Clickstream Events from Web Servers
 
 In this module, you will start with an AutoScaling Group of Apache web servers, representing the front-end of your existing website or application.  The AutoScaling Group receives incoming connections from an Application Load Balancer, and is configured to automatically scale out (and back in) based on the amount of incoming network traffic received by the web servers:
