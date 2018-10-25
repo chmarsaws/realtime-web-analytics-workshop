@@ -85,7 +85,7 @@ Your stack will take a few minutes to deploy.  When the status for the stack cha
 
 ## 2. Manually Updating the Kinesis Analytics Application in the Console 
 
-In this step we are going to manually add the SQL and destination stream in Kinesis Analytics through the console.  This is to allow you to get familiaar with Kinesis Analyitics and see the effects of modifying SQL and inspecting the in application streams.  
+In this step we are going to manually add the SQL and destination stream in Kinesis Analytics through the console.  This is to allow you to get familiar with Kinesis Analyitics and see the effects of modifying SQL and inspecting the in application streams.  
 
 <details>
 <summary><strong>Update the SQL (expand for details)</strong></summary><p>

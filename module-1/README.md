@@ -19,7 +19,7 @@ US West (Oregon) | [![Launch Module 1 in ](http://docs.aws.amazon.com/AWSCloudFo
 US West (N. Virginia) | [![Launch Module 1 in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/1-frontend-module-start.yaml)
 
 2.	Click **Next** on the Select Template page.
-3.	**(Optional)** If you'd like to login to the web servers, select an **SSH Keypair** for this region, select True next to **Enable SSH**, and enter a CIDR block such as `0.0.0.0/0` next to **Enable SSH From**. If you don't have a key pair already created, see ([Creating a key pair using amazon EC2](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair))
+3.	You are required to select an **SSH Keypair** for this region, but the other SSH settings are **optional**: select True next to **Enable SSH**, and enter a CIDR block such as `0.0.0.0/0` next to **Enable SSH From**. If you don't have a key pair already created, see ([Creating a key pair using amazon EC2](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair))
 
 ![Configuring SSH access](../images/module-1-ssh.png)
 
@@ -342,17 +342,22 @@ In this section you will execute a python script that posts http header data to 
 
 ![Outputs](../images/2-outputs.png)
 
+4.  The python script, `test-beacon.py` is located in the `module-1/` folder in the GitHub repository that you should have checked out.  If you have trouble locating it, you can also find it ([here.](test-beacon.py))
+
 <details>
 <summary><strong>Example Command (expand for details)</strong></summary>
 
+Assuming you checked out the GitHub repository to your home directory:
 ```bash
+  cd ~/realtime-web-analytics-workshop/module-1/
   python ./test-beacon.py http://realt-Appli-1P8C8FJ52YGXM-EXAMPLE.us-east-1.elb.amazonaws.com/beacon 20000 0.5
 ```
 
 *  The first parameter is the address for the load balancer.  Your DNS entry will be different than the example here.
 *  The second parameter is the number of requests to send before ending the script.  In this case the script will simulate 20,000 web requests.
 *  The last parameter is the number of seconds to delay between sending requests.  Using these values the script should generate data for over two hours. 
-4.  Open a terminal or command window, naviagte to the folder that contains the test-beacon.py script and execute the command.  If the post messages are sent successfully to the load balancer, you should see an incrementing count in the terminal window.  You can leave this running for the rest of the workshop. 
+4.  Open a terminal or command window, naviagte to the folder that contains the test-beacon.py script and execute the command.  If the post messages are sent successfully to the load balancer, you should see an incrementing count in the terminal window.  You can leave this running for the rest of the workshop.
+Note: if you checked out the GitHub repository to your home directory, the script should be located in `~/realtime-web-analytics-workshop/module-1/`.
 
 </details>
 

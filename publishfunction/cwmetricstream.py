@@ -48,6 +48,7 @@ def put_cloudwatch_metric(event_name, event_datetime, event_count=1, cwc=boto3.c
     response = cwc.put_metric_data(Namespace=namespace,MetricData=metricData)
 
 def lambda_handler(event, context):
+    print json.dumps(event)
     events_int = defaultdict(int)
     events_float = defaultdict(float)
     for record in event['Records']:
@@ -61,7 +62,7 @@ def lambda_handler(event, context):
                 event_time = datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%dT%H:%M:%S')
 
             metric_field = metric['M']['METRICTYPE']['S']
-            if metric_field=='agent_count' or 'event_count' or 'referral_count' or 'top_pages':
+            if metric_field=='agent_count' or metric_field=='event_count' or metric_field=='referral_count' or metric_field=='top_pages':
                 if metric['M']['METRICITEM']['S'] == 'null':
                     event_type = metric_field + ':No referrer' # split on : later
                 else:
@@ -69,7 +70,6 @@ def lambda_handler(event, context):
                 event_value = metric['M']['UNITVALUEINT']['N'] # these metric types all have int values
                 events_int[(event_type, event_time)] = int(event_value)
             elif metric_field == 'event_anomaly': # anomalies need to be split on :
-                print "Anomaly detected!"
                 event_type_list = metric['M']['METRICITEM']['S'].split(':')
                 event_type = metric_field + ':' + event_type_list[0] # split on : later
                 event_value = metric['M']['UNITVALUEFLOAT']['N'] # anomalies events have float values
