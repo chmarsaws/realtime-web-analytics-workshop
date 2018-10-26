@@ -10,7 +10,7 @@ In this module, which builds on our previous modules, you will start with realti
 
 ## 1. (Recommended Path) Deploy DynamoDB Stream and Metrics Publishing Lambda
 
-For this module, you can choose to create the DynamoDB Stream and Metrics Publishing Lambda function through CloudFormation, in a mostly automated manner, or you can choose to configure them manually in the AWS console.  We recommend that you follow the automated path, but if you prefer to do this manually, you can expand the optional path below.
+For this module, you can choose to create the DynamoDB Stream and Metrics Publishing Lambda function through CloudFormation, in an automated manner, or you can choose to configure them manually in the AWS console.  We recommend that you follow the automated path, but if you prefer to do this manually, you can expand the optional path below.
 
 If you haven't completed modules 1 and 2, you can simply create a new stack from the CloudFormation template, but if you have already completed module 1 or 2, you should update the existing stack by following the instructions below.  The updated CloudFormation template is located in the `module-3` folder in the repository and can be found here: [Module 3 Starting CloudFormation Template](3-cloudwatch-dashboard-start.yaml)
 
@@ -304,6 +304,8 @@ AWS Lambda functions require a trigger, or event source that will invoke the fun
 ![Create Lambda function 3](../images/module-3-lambda3.png)
 
 3.  Click the **Save** button in the top right to save our changes.
+
+</p></details>
 
 ## 3. Visualizing Metrics with CloudWatch Graphs
 
