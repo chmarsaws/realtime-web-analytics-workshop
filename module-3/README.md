@@ -40,9 +40,9 @@ If you haven't completed modules 1 and 2, you can simply create a new stack from
 
 </p></details>
 
-## 1. (Optional Path) Create a DynamoDB Stream
+## 1a. (Optional Path) Manually Create DynamoDB Stream and Metrics Publishing Lambda
 
-If you prefer to configure the DynamoDB Stream and Metrics Publishing Lambda function manually, you can follow this path by expanding the section below.
+If you prefer to configure the DynamoDB Stream and Metrics Publishing Lambda function manually, you can follow this path by expanding the section below.  If you've already updated or deployed the CloudFormation stack in step 1, skip this section.
 
 <details>
 <summary><strong>Optional Path - Manually Create Resources (expand for details)</strong></summary><p>
@@ -66,7 +66,7 @@ First, we need to create a DynamoDB Stream from the `realtime-analytics-MetricDe
 
 </details>
 
-## 2. Create an IAM role and policy for DynamoDB Streams, Lambda, and CloudWatch
+## 1b. Create an IAM role and policy for DynamoDB Streams, Lambda, and CloudWatch
 
 Next, we need to create an IAM role and policy that will be used by the Lambda function, and will enable the DynamoDB Stream to invoke the Lambda function, and will allow the Lambda function to publish metric data to CloudWatch.
 
@@ -148,7 +148,7 @@ Next, we need to create an IAM role and policy that will be used by the Lambda f
 
 </p></details>
 
-## 3. Create the PushMetrics Lambda Function
+## 1c. Create the PushMetrics Lambda Function
 
 In this step, we'll create the Lambda function that publishes CloudWatch metrics data from the DynamoDB Stream.
 
@@ -160,15 +160,7 @@ In this step, we'll create the Lambda function that publishes CloudWatch metrics
 
 ![Create Lambda function 1](../images/module-3-lambda1.png)
 
-3.  Now, on the Lambda function screen in the console, you'll need to click on **DynamoDB** in the **Designer** underneath **Add triggers**:
-
-![Create Lambda function 2](../images/module-3-lambda2.png)
-
-4.  You'll notice that the DynamoDB trigger we just added says "Configuration required" in an informational bubble.  Scroll down to the **Configure triggers** section and select `realtime-analytics-MetricDetails` as the **DynamoDB table**.  Enter `300` for **Batch size**, and select `Trim Horizon` under **Starting Position**.  Click the **Add** button.
-
-![Create Lambda function 3](../images/module-3-lambda3.png)
-
-5.  Now, scroll down to the **Function code** section, and make sure that `Edit code inline` is selected from the **Code entry type** drop-down menu.  Copy and paste the following Python code into the inline code editing window:
+3.  Now, scroll down to the **Function code** section, and make sure that `Edit code inline` is selected from the **Code entry type** drop-down menu.  Copy and paste the following Python code into the inline code editing window:
 
 <details>
 <summary><strong>Lambda Function Code (expand for code)</strong></summary><p>
@@ -272,11 +264,11 @@ def lambda_handler(event, context):
 ```
 </p></details>
 
-6.  After pasting the code, your inline editor should look like this:
+4.  After pasting the code, your inline editor should look like this:
 
 ![Create Lambda function 4](../images/module-3-lambda4.png)
 
-7.  Next, scroll down to the **Environment variables** section, and enter the following environment variables:
+5.  Next, scroll down to the **Environment variables** section, and enter the following environment variables:
   * `AGENT_NAMESPACE` should be `EventAgents`
   * `ANOMALY_NAMESPACE` should be `EventAnomalies`
   * `EVENT_NAMESPACE` should be `EventCounts`
@@ -286,17 +278,34 @@ def lambda_handler(event, context):
 
 ![Create Lambda function 5](../images/module-3-lambda5.png)
 
-8.  Next, scroll down to the **Basic settings** section, and set **Timeout** to `5` minutes, and leave **Memory** set at `128MB`:
+6.  Next, scroll down to the **Basic settings** section, and set **Timeout** to `5` minutes, and leave **Memory** set at `128MB`:
 
 ![Create Lambda function 6](../images/module-3-lambda6.png)
 
-9.  Finally, scroll back up to the top of the Lambda function configuration screen, and click the **Save** button in the top right.
+7.  Finally, scroll back up to the top of the Lambda function configuration screen, and click the **Save** button in the top right.
 
 </p></details>
 
 </p></details>
 
-## 4. Visualizing Metrics with CloudWatch Graphs
+## 2.  Creating a DynamoDB Streams Trigger for the Metrics Publishing Lambda
+
+AWS Lambda functions require a trigger, or event source that will invoke the function.  In the case of DynamoDB Streams, an event is generated whenever an item is added to or modified in a DynamoDB table.  In this step, we will configure the Lambda metrics publishing function to be triggered whenever this happens.
+
+<details>
+<summary><strong>DynamoDB Streams Trigger Configuration (expand for details)</strong></summary><p>
+
+1.  Open Lambda inside the AWS console, and find the function that called `realtime-analytics-workshop-PublishMetricsFunction...` (or the name you selected when creating it) and click on it.  On the **Configuration** screen, you'll need to click on **DynamoDB** in the **Designer** underneath **Add triggers**:
+
+![Create Lambda function 2](../images/module-3-lambda2.png)
+
+2.  You'll notice that the DynamoDB trigger we just added says "Configuration required" in an informational bubble.  Scroll down to the **Configure triggers** section and select `realtime-analytics-MetricDetails` as the **DynamoDB table**.  Enter `300` for **Batch size**, and select `Trim Horizon` under **Starting Position**.  Click the **Add** button.
+
+![Create Lambda function 3](../images/module-3-lambda3.png)
+
+3.  Click the **Save** button in the top right to save our changes.
+
+## 3. Visualizing Metrics with CloudWatch Graphs
 
 In this step, we'll create a graph from the CloudWatch metrics that are now being published from DynamoDB Streams by our Lambda function.
 
@@ -368,8 +377,8 @@ Now that you've seen how easy it is to create your own graphs from CloudWatch me
 
 Region| Launch
 ------|-----
-US West (Oregon) | [![Launch Dashboard in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/1-frontend-module-start.yaml)
-US West (N. Virginia) | [![Launch Dashboard in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/1-frontend-module-start.yaml)
+US West (Oregon) | [![Launch Dashboard in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/3-cloudwatch-dashboard.yaml)
+US West (N. Virginia) | [![Launch Dashboard in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/3-cloudwatch-dashboard.yaml)
 
 2.  Give the stack a name, such as `cloudwatch-dashboard`, and click **Next** until the stack launches.
 
