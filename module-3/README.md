@@ -8,7 +8,44 @@ In this module, which builds on our previous modules, you will start with realti
 
 ![module-3-diagram](../images/Realtime-Website-Analytics-Diagram.png)
 
-## 1. Create a DynamoDB Stream
+## 1. (Recommended Path) Deploy DynamoDB Stream and Metrics Publishing Lambda
+
+For this module, you can choose to create the DynamoDB Stream and Metrics Publishing Lambda function through CloudFormation, in a mostly automated manner, or you can choose to configure them manually in the AWS console.  We recommend that you follow the automated path, but if you prefer to do this manually, you can expand the optional path below.
+
+If you haven't completed modules 1 and 2, you can simply create a new stack from the CloudFormation template, but if you have already completed module 1 or 2, you should update the existing stack by following the instructions below.  The updated CloudFormation template is located in the `module-3` folder in the repository and can be found here: [Module 3 Starting CloudFormation Template](3-cloudwatch-dashboard-start.yaml)
+
+<details>
+<summary><strong>Recommended Path - Update CloudFormation Stack (expand for details)</strong></summary><p>
+
+1.  Navigate to the CloudFormation service in the AWS Console.
+2.  Check the box for the stack called `realtime-analytics-workshop`.
+
+![Select Stack](../images/2-select-stack.png)
+
+3.  Click Actions and Update Stack from the menu.
+
+![Update Stack](../images/2-update-stack.png)
+
+4.  Click Choose File and select the `3-cloudwatch-dashboard-start.yaml` from your local `module-3` folder cloned from this git repository.
+
+![Choose File](../images/2-choose-file.png)
+
+5.  Click **Next**.
+6.  Click **Next**.
+7.  Check the box indicating acknowledgement that the stack will create IAM Roles.
+
+![Ack IAM](../images/2-capabilities-iam.png)
+
+8.  Click the **Update** button in the lower right.
+
+</p></details>
+
+## 1. (Optional Path) Create a DynamoDB Stream
+
+If you prefer to configure the DynamoDB Stream and Metrics Publishing Lambda function manually, you can follow this path by expanding the section below.
+
+<details>
+<summary><strong>Optional Path - Manually Create Resources (expand for details)</strong></summary>
 
 First, we need to create a DynamoDB Stream from the `realtime-analytics-MetricDetails` DynamoDB table.
 
@@ -256,6 +293,8 @@ def lambda_handler(event, context):
 9.  Finally, scroll back up to the top of the Lambda function configuration screen, and click the **Save** button in the top right.
 
 </p></details>
+
+</details>
 
 ## 4. Visualizing Metrics with CloudWatch Graphs
 

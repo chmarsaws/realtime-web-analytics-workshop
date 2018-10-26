@@ -17,8 +17,8 @@ If you have already completed module #1, you can update the existing stack with 
 <details>
 <summary><strong>1.A Update CloudFormation Stack from Module #1 (expand for details)</strong></summary><p>
 
-1.	Navigate to the CloudFormation serviice in the AWS Console.
-2.  Check the box for the stack you created in module #1.
+1.	Navigate to the CloudFormation service in the AWS Console.
+2.  Check the box for the stack called `realtime-analytics-workshop`.
 
 ![Select Stack](../images/2-select-stack.png)
 
