@@ -45,7 +45,7 @@ If you haven't completed modules 1 and 2, you can simply create a new stack from
 If you prefer to configure the DynamoDB Stream and Metrics Publishing Lambda function manually, you can follow this path by expanding the section below.
 
 <details>
-<summary><strong>Optional Path - Manually Create Resources (expand for details)</strong></summary>
+<summary><strong>Optional Path - Manually Create Resources (expand for details)</strong></summary><p>
 
 First, we need to create a DynamoDB Stream from the `realtime-analytics-MetricDetails` DynamoDB table.
 
@@ -294,7 +294,7 @@ def lambda_handler(event, context):
 
 </p></details>
 
-</details>
+</p></details>
 
 ## 4. Visualizing Metrics with CloudWatch Graphs
 
