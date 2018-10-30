@@ -7,11 +7,12 @@ Knowing what users are doing on your web sites in realtime gives you insights yo
 In this workshop we will build a cost optimized platform to capture web beacon traffic, analyze the traffic for interesting metrics, and display it on a customized dashboard.
 
 <details>
-<summary><strong>Note:  You are responsible for the cost of AWS services used while running this workshop.  Expand for more details.</strong></summary><p>
+<summary><strong>Note: You are responsible for the cost of AWS services used while running this workshop.  Expand for details.</strong></summary><p>
 
 You are responsible for the cost of the AWS services used while running this reference deployment. As of the date of publication, the baseline cost for running this solution with default settings in the US East (N. Virginia) Region is approximately $100 per month. This cost estimate assumes the solution will record 1 million events per day with an average size of one kilobyte per event. Note that the monthly cost will vary depending on the number of events the solution processes. For 10 million events per day, the cost is approximately $170 per month. For 100 million events per day, the cost is approximately $950 per month. Prices are subject to change. For full details, see the pricing webpage for each AWS service you will be using in this solution.
 
-</p></details>
+</p></details> 
+
 
 To get started with this fun and educational workshop, simply clone this repository and start on module 1 below:
 
