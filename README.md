@@ -6,9 +6,45 @@ Knowing what users are doing on your web sites in realtime gives you insights yo
 
 In this workshop we will build a cost optimized platform to capture web beacon traffic, analyze the traffic for interesting metrics, and display it on a customized dashboard.
 
-To get started with this fun and educational workshop, simply clone (if you have git installed) or download (if you don't have git installed) this repository and start on module 1 below:
+To get started with this fun and educational workshop, simply clone this repository and start on module 1 below:
 
 ![Clone repository](images/clone-repo.png)
+
+**Note:**  If you don't have python or git installed on your computer, I recommend that you use an [AWS Cloud9](https://aws.amazon.com/cloud9/) environment to clone the repository, as well as run the python scripts that are part of this workshop.  Expand the instructions below for instructions:
+
+<details>
+<summary><strong>Cloud9 Environment Setup (expand for details)</strong></summary><p>
+
+### AWS Cloud9 Setup Instructions
+
+1.  Navigate in the AWS console to **Services**, then select **Cloud9**.  Be sure that you have either the **US East (N. Virginia)** or the **US West (Oregon)** region selected before you proceed to the next step.
+2.  Click the **Create Environment** button:
+
+![Cloud9 Create Environment](images/cloud9-create-environment.png)
+
+3.  Give your Environment a name, then click the **Next step** button:
+
+![Cloud9 Next step](images/cloud9-next-step.png)
+
+4.  The default Environment settings should be fine for this workshop (t2.micro instance type), which will allow you to stay within the free tier for your Cloud9 environment usage.  If you want to load test the solution from this environment, you may want to provision a larger instance type to increase the network bandwidth available to your environment:
+
+![Cloud9 Next step 2](images/cloud9-next-step2.png)
+
+5.  Review the Environment name and settings, then click the **Create environment** button to continue:
+
+![Cloud9 Review](images/cloud9-review.png)
+
+6.  Once your environment has started, you can open a Terminal to run the git clone command:
+
+`git clone https://github.com/aws-samples/realtime-web-analytics-workshop.git`
+
+![Cloud9 Clone](images/cloud9-clone.png)
+
+7.  You're now ready to proceed with Module 1.  Use the Cloud9 Environment whenever you need to access any of the artifacts from the workshop git repository or run the python scripts.
+
+**Note:**  The Cloud9 Environment will automatically turn off after being idle for 30 minutes, so you might need to restart it by accessing it through the AWS console if you've been idle.
+
+</p></details>
 
 ## Module 1 – Capturing Realtime Clickstream Events from Web Servers
 
