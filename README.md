@@ -6,16 +6,23 @@ Knowing what users are doing on your web sites in realtime gives you insights yo
 
 In this workshop we will build a cost optimized platform to capture web beacon traffic, analyze the traffic for interesting metrics, and display it on a customized dashboard.
 
+<details>
+<summary><strong>Note:  You are responsible for the cost of AWS services used while running this workshop.  Expand for more details.</strong></summary><p>
+
+You are responsible for the cost of the AWS services used while running this reference deployment. As of the date of publication, the baseline cost for running this solution with default settings in the US East (N. Virginia) Region is approximately $100 per month. This cost estimate assumes the solution will record 1 million events per day with an average size of one kilobyte per event. Note that the monthly cost will vary depending on the number of events the solution processes. For 10 million events per day, the cost is approximately $170 per month. For 100 million events per day, the cost is approximately $950 per month. Prices are subject to change. For full details, see the pricing webpage for each AWS service you will be using in this solution.
+
+</p></details>
+
 To get started with this fun and educational workshop, simply clone this repository and start on module 1 below:
 
 ![Clone repository](images/clone-repo.png)
 
-**Note:**  If you don't have python or git installed on your computer, I recommend that you use an [AWS Cloud9](https://aws.amazon.com/cloud9/) environment to clone the repository, as well as run the python scripts that are part of this workshop.  Expand the instructions below for instructions:
+**Note:**  If you don't have python or git installed on your computer, I recommend that you use an [AWS Cloud9](https://aws.amazon.com/cloud9/) environment to clone the repository, as well as run the python scripts that are part of this workshop.  Expand the instructions below for details:
 
 <details>
 <summary><strong>Cloud9 Environment Setup (expand for details)</strong></summary><p>
 
-### AWS Cloud9 Setup Instructions
+### AWS Cloud9 Environment Setup Instructions
 
 1.  Navigate in the AWS console to **Services**, then select **Cloud9**.  Be sure that you have either the **US East (N. Virginia)** or the **US West (Oregon)** region selected before you proceed to the next step.
 2.  Click the **Create Environment** button:
@@ -42,7 +49,7 @@ To get started with this fun and educational workshop, simply clone this reposit
 
 7.  You're now ready to proceed with Module 1.  Use the Cloud9 Environment whenever you need to access any of the artifacts from the workshop git repository or run the python scripts.
 
-**Note:**  The Cloud9 Environment will automatically turn off after being idle for 30 minutes, so you might need to restart it by accessing it through the AWS console if you've been idle.
+**Note:**  The Cloud9 Environment will automatically turn off after being idle for 30 minutes, so you might need to restart it by accessing it through the AWS console.
 
 </p></details>
 
@@ -57,6 +64,8 @@ You will then create an S3 analytics bucket that will store an archive of all th
 ![Kinesis Agent and Kinesis Data Firehose](images/module-1.png)
 
 In this scenario, you will leverage Amazon S3, Amazon EC2 Linux Instances, AutoScaling, Amazon Kinesis Data Firehose, and CloudFormation to automate the initial deployment, as well as changes to the stack.
+
+**Note:**  The AWS services you use to complete this workshop will cost a small 
 
 [Get Started on Module 1](module-1/README.md)
 
