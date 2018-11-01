@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: "Module 2 - adding Kinesis Analytics, Processing Lambda, and DyanmoDB persistence"
+Description: "Module 3 - adding CloudWatch Metrics and Graphs"
 
 Parameters:
   EnableSSH:
