@@ -26,9 +26,9 @@ If you haven't completed modules 1 and 2, you can simply create a new stack from
 
 ![Update Stack](../images/2-update-stack.png)
 
-4.  Click Choose File and select the `3-cloudwatch-dashboard-start.yaml` from your local `module-3` folder cloned from this git repository.
+4.  Select the **Specify an Amazon S3 template URL** radio button, then copy/paste `https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/3-cloudwatch-dashboard-start.yaml` into the field below it:
 
-![Choose File](../images/2-choose-file.png)
+![S3 Template](../images/module-3-s3template.png)
 
 5.  Click **Next**.
 6.  Click **Next**.
