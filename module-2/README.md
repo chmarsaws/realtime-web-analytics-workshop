@@ -151,7 +151,7 @@ CREATE STREAM "DESTINATION_SQL_STREAM"(
 <summary><strong>Review Completed Steps (expand for details) </strong></summary><p>  
 
 
-You should now have data flowing through the pipeline into the **stack-name**-MetricDetails DynnamoDB table.  
+You should now have data flowing through the pipeline into the **stack-name**-MetricDetails DynamoDB table.  
 
 ![Review Steps Completed](../images/2-complete.png)  
 
