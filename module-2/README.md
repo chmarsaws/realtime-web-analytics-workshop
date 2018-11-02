@@ -113,7 +113,8 @@ In this step we are going to manually add the SQL and destination stream in Kine
 
 <details>
 <summary><strong>Create In-Application Destination Stream (expand for code)</strong></summary>
-Add the following code to the SQL editor
+
+**Leave the existing SQL** in the editor, and add the following SQL code **at the beginning** to add the stream that will be used for the destination.
 
 ```SQL
 CREATE STREAM "DESTINATION_SQL_STREAM"(
