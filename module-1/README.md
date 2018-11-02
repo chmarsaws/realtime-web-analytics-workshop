@@ -47,11 +47,11 @@ During this step, we'll illustrate how you would take an existing group of web o
 
 1.  We will be updating the stack with a newer version of the CloudFormation template, which you can see here: ([Module 1 Final Template](1-frontend-module-finish.yaml))
 
-2.  Navigate in the AWS Console to **Services**, **CloudFormation**, and select the stack titled `https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/1-frontend-module-finish.yaml`, then select **Actions**, **Update Stack**:
+2.  Navigate in the AWS Console to **Services**, **CloudFormation**, and select the stack titled `realtime-analytics-workshop`, then select **Actions**, **Update Stack**:
 
 ![Updating CloudFormation Stack](../images/module-1-updatestack1.png)
 
-3.  Select the **Specify an Amazon S3 template URL** radio button, then enter `s3://realtime-analytics-workshop/1-frontend-module-finish.yaml` and click **Next**:
+3.  Select the **Specify an Amazon S3 template URL** radio button, then copy/paste `https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/1-frontend-module-finish.yaml` into the URL field and click **Next**:
 
 ![Updating CloudFormation Stack](../images/module-1-updatestack2.png)
 
