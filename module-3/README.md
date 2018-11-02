@@ -352,6 +352,8 @@ In this step, we'll create a graph from the CloudWatch metrics that are now bein
 
 10.  Click the right-arrow underneath the **Y Axis** column in the row for the **EventAnomalies** metric, then click the down-arrow next to the **Period** column, and change the value to *10 seconds*.  When done, your graph should look something like this:
 
+**Note**: If you don't see any data points on your graph, the python load generator function might have stopped running.  If so, you can start it by going to the `module-1` folder in your checked out version of the git repository and running the python script.  The exact syntax of the command can be found on your CloudFormation outputs screen.
+
 ![Create CloudWatch Graph 10](../images/module-3-cloudwatch10.png)
 
 11.  Click the Alarm (bell) icon in the **Actions** column in the row for the **EventAnomalies** metric.  On the **Create Alarm** screen, type in a name, such as `Click event anomaly detected`.  In the **Whenever** section, set it to `Whenever: click is >= 2` (as shown below), and click the **Delete** link in the top-right corner of the default action in the **Actions** section to remove it.  The **Create Alarm** screen should look like this:
