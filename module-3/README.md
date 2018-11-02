@@ -309,7 +309,7 @@ AWS Lambda functions require a trigger, or event source that will invoke the fun
 
 ## 3. Visualizing Metrics with CloudWatch Graphs
 
-In this step, we'll create a graph from the CloudWatch metrics that are now being published from DynamoDB Streams by our Lambda function.
+In this step, we'll create a graph from the CloudWatch metrics that are now being published from DynamoDB Streams by our Lambda function.  **Note**: It may take a minute or two after you save the Lambda function in the previous step before metrics start to appear in the CloudWatch console.
 
 <details>
 <summary><strong>CloudWatch graph creation (expand for details)</strong></summary><p>
