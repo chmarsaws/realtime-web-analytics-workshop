@@ -26,9 +26,9 @@ If you haven't completed modules 1 and 2, you can simply create a new stack from
 
 ![Update Stack](../images/2-update-stack.png)
 
-4.  Click Choose File and select the `3-cloudwatch-dashboard-start.yaml` from your local `module-3` folder cloned from this git repository.
+4.  Select the **Specify an Amazon S3 template URL** radio button, then copy/paste `https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/3-cloudwatch-dashboard-start.yaml` into the field below it:
 
-![Choose File](../images/2-choose-file.png)
+![S3 Template](../images/module-3-s3template.png)
 
 5.  Click **Next**.
 6.  Click **Next**.
@@ -309,7 +309,7 @@ AWS Lambda functions require a trigger, or event source that will invoke the fun
 
 ## 3. Visualizing Metrics with CloudWatch Graphs
 
-In this step, we'll create a graph from the CloudWatch metrics that are now being published from DynamoDB Streams by our Lambda function.
+In this step, we'll create a graph from the CloudWatch metrics that are now being published from DynamoDB Streams by our Lambda function.  **Note**: It may take a minute or two after you save the Lambda function in the previous step before metrics start to appear in the CloudWatch console.
 
 <details>
 <summary><strong>CloudWatch graph creation (expand for details)</strong></summary><p>
@@ -352,6 +352,8 @@ In this step, we'll create a graph from the CloudWatch metrics that are now bein
 
 10.  Click the right-arrow underneath the **Y Axis** column in the row for the **EventAnomalies** metric, then click the down-arrow next to the **Period** column, and change the value to *10 seconds*.  When done, your graph should look something like this:
 
+**Note**: If you don't see any data points on your graph, the python load generator function might have stopped running.  If so, you can start it by going to the `module-1` folder in your checked out version of the git repository and running the python script.  The exact syntax of the command can be found on your CloudFormation outputs screen.
+
 ![Create CloudWatch Graph 10](../images/module-3-cloudwatch10.png)
 
 11.  Click the Alarm (bell) icon in the **Actions** column in the row for the **EventAnomalies** metric.  On the **Create Alarm** screen, type in a name, such as `Click event anomaly detected`.  In the **Whenever** section, set it to `Whenever: click is >= 2` (as shown below), and click the **Delete** link in the top-right corner of the default action in the **Actions** section to remove it.  The **Create Alarm** screen should look like this:
@@ -379,8 +381,8 @@ Now that you've seen how easy it is to create your own graphs from CloudWatch me
 
 Region| Launch
 ------|-----
-US West (Oregon) | [![Launch Dashboard in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/3-cloudwatch-dashboard.yaml)
-US West (N. Virginia) | [![Launch Dashboard in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/3-cloudwatch-dashboard.yaml)
+US West (Oregon) | [![Launch Dashboard in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=realtime-analytics-workshop-dashboard&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/3-cloudwatch-dashboard.yaml)
+US East (N. Virginia) | [![Launch Dashboard in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=realtime-analytics-workshop-dashboard&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/3-cloudwatch-dashboard.yaml)
 
 2.  Give the stack a name, such as `cloudwatch-dashboard`, and click **Next** until the stack launches.
 

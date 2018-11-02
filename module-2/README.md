@@ -26,7 +26,7 @@ If you have already completed module #1, you can update the existing stack with 
 
 ![Update Stack](../images/2-update-stack.png)
 
-4.  Click Choose File and select the 2-kinesis-analytics-module-start.yaml from your local module-2 folder cloned from this git repository.
+4.  Select the **Specify an Amazon S3 template URL** radio button, and copy/paste `https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/2-kinesis-analytics-module-start.yaml` into the field below it.
 
 ![Choose File](../images/2-choose-file.png)
 
@@ -152,7 +152,7 @@ CREATE STREAM "DESTINATION_SQL_STREAM"(
 <summary><strong>Review Completed Steps (expand for details) </strong></summary><p>  
 
 
-You should now have data flowing through the pipeline into the **stack-name**-MetricDetails DynnamoDB table.  
+You should now have data flowing through the pipeline into the **stack-name**-MetricDetails DynamoDB table.  
 
 ![Review Steps Completed](../images/2-complete.png)  
 
