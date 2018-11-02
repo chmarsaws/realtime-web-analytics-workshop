@@ -381,8 +381,8 @@ Now that you've seen how easy it is to create your own graphs from CloudWatch me
 
 Region| Launch
 ------|-----
-US West (Oregon) | [![Launch Dashboard in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/3-cloudwatch-dashboard.yaml)
-US West (N. Virginia) | [![Launch Dashboard in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/3-cloudwatch-dashboard.yaml)
+US West (Oregon) | [![Launch Dashboard in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=realtime-analytics-workshop-dashboard&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/3-cloudwatch-dashboard.yaml)
+US West (N. Virginia) | [![Launch Dashboard in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=realtime-analytics-workshop-dashboard&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/3-cloudwatch-dashboard.yaml)
 
 2.  Give the stack a name, such as `cloudwatch-dashboard`, and click **Next** until the stack launches.
 
