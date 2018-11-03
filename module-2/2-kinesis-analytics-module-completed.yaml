@@ -973,6 +973,8 @@ Resources:
       TimeToLiveSpecification:
         AttributeName: ExpireTime
         Enabled: true
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
 
   DDBScalingRole:
     Type: AWS::IAM::Role
