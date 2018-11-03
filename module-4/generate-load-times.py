@@ -22,7 +22,7 @@ s = requests.Session()
 while (i < int(args.calls)):
     time.sleep(float(args.delay))
     loadTime = generateRandomLoadTime()
-    headers = {'custom_metric_name' : 'page_load_time', 'custom_metric_int_value' : loadTime }
+    headers = {'custom_metric_name' : 'page_load_time', 'custom_metric_int_value' : str(loadTime) }
     r = s.post(args.target + '?call=' + str(i),headers=headers)
     if(r.status_code==200):
         sys.stdout.write( str(i) + "-")
