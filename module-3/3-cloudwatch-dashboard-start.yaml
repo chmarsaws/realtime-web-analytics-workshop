@@ -817,7 +817,7 @@ Resources:
 
             CREATE OR REPLACE PUMP "ANOMALY_EVENT_PUMP" AS
             INSERT INTO "DESTINATION_SQL_STREAM" (MetricType, EventTimestamp, MetricItem, UnitValueFloat)
-            SELECT 'event_anomaly', CAST(EventTimestampString AS BIGINT), MetricItem || ':' || CAST(UnitValueInt as VARCHAR(16)), AnomalyScore FROM (
+            SELECT 'event_anomaly', CAST(EventTimestampString AS BIGINT), MetricItem , AnomalyScore FROM (
                 SELECT STREAM
                     EventTimestampString,
                     MetricItem,
