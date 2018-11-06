@@ -714,7 +714,14 @@ Resources:
                 Resource: !Sub
                   - ${Param1}*
                   - Param1: !GetAtt ProcessMetricsFunction.Arn
-
+              - Sid: WriteOutputStram
+                Effect: Allow
+                Action:
+                  - kinesis:PutRecord
+                  - kinesis:PutRecords
+                  - kinesis:DescribeStream
+                Resource:
+                  - !GetAtt 'OutputStream.Arn'
   KinesisAnalyticsApp:
     Type: AWS::KinesisAnalytics::Application
     Properties:
@@ -925,20 +932,29 @@ Resources:
           KinesisFirehoseInput:
             ResourceARN: !Sub 'arn:aws:firehose:${AWS::Region}:${AWS::AccountId}:deliverystream/${DeliveryStream}'
             RoleARN: !GetAtt 'KinesisAnalyticsRole.Arn'
-  AnaliticsOutput:
-    Type: AWS::KinesisAnalytics::ApplicationOutput 
-    DependsOn: KinesisAnalyticsApp
+
+  KinesisAnalyticsAppAnomalyOutput:
+    Type: AWS::KinesisAnalytics::ApplicationOutput
     Properties:
-      ApplicationName: !Sub '${AWS::StackName}-WebMetricsApplication'
-      Output: 
-        DestinationSchema: 
+      ApplicationName: !Ref KinesisAnalyticsApp
+      Output:
+        DestinationSchema:
           RecordFormatType: JSON
-        LambdaOutput: 
-          ResourceARN: !GetAtt ProcessMetricsFunction.Arn
+        KinesisStreamsOutput:
+          ResourceARN: !GetAtt OutputStream.Arn
           RoleARN: !GetAtt KinesisAnalyticsRole.Arn
         Name: DESTINATION_SQL_STREAM
 
-# Metric Storage
+# Kinesis Stream
+  OutputStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: !Sub '${AWS::StackName}-OutputStream'
+      RetentionPeriodHours: 24
+      ShardCount: 1
+
+
+  # Metric Storage
   MetricTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -1105,6 +1121,15 @@ Resources:
                   - logs:PutLogEvents
                 Resource:
                   - !Join ["", ["arn:aws:logs:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":log-group:/aws/lambda/*"]]
+              - Sid: AccessOutputStream
+                Effect: Allow
+                Action:
+                - kinesis:GetRecords
+                - kinesis:GetShardIterator
+                - kinesis:DescribeStream
+                - kinesis:ListStreams
+                Resource:
+                - !GetAtt OutputStream.Arn
 
   ProcessMetricsFunction:
     Type: AWS::Lambda::Function
@@ -1126,25 +1151,23 @@ Resources:
         Variables:
           METRIC_TABLE: !Ref MetricTable
           METRIC_DETAILS_TABLE: !Ref MetricDetailsTable
-          SOLUTION_UUID: !GetAtt GenerateUUID.UUID
-          SOLUTION_ID: !FindInMap
-            - Solution
-            - Data
-            - ID
-          SOLUTION_VERSION: !FindInMap
-            - Solution
-            - Data
-            - Version
-          SEND_ANONYMOUS_DATA: !FindInMap
-            - Solution
-            - Data
-            - SendAnonymousUsageData
+          PULL_FROM_STREAMS: 'Y'
+
       Description: Solution Accelerator for Web Analytics - Function to process metrics.
       Handler: index.handler
       MemorySize: 256
       Role: !GetAtt ProcessMetricsLambdaRole.Arn
       Runtime: nodejs6.10
       Timeout: 300
+
+ProcessEventSourceMapping:
+  Type: AWS::Lambda::EventSourceMapping
+  Properties:
+    BatchSize: 100
+    Enabled: true
+    EventSourceArn: !GetAtt OutputStream.Arn
+    FunctionName: !GetAtt ProcessMetricsFunction.Arn
+    StartingPosition: 'LATEST'
 
 # Lambda Cloudwatch Metrics Publishing Function
   PublishMetricsLambdaRole:
@@ -1173,6 +1196,7 @@ Resources:
                   - dynamodb:ListStreams
                 Resource:
                   - !Sub "${MetricDetailsTable.Arn}/stream/*"
+                  - !Ref MetricTable
               - Sid: CWLogs
                 Effect: Allow
                 Action:
@@ -1193,90 +1217,79 @@ Resources:
     Properties:
       Code:
         ZipFile: |
-          import json
-          import boto3
-          from os import environ
-          from datetime import datetime
-          from collections import defaultdict
+          #############################################################################
+          ## cwmetricstream.py - A Lambda function that reads from a DynamoDB stream ##
+          ## and pushes CloudWatch metrics to different event count namespaces.      ##
+          ## ----------------------------------------------------------------------- ##
+          ## Set the following environment variables:                                ##
+          ## METRICS_TABLE = DynamoDB table containing all metric types              ##
+          #############################################################################
 
-          def put_cloudwatch_metric(event_name, event_datetime, event_count=1, cwc=boto3.client('cloudwatch', region_name=environ['REGION'])):
-              event_name_list = event_name.split(':')
-              if event_name_list[0] == 'agent_count':
-                  namespace=environ['AGENT_NAMESPACE']
-                  metricname=event_name_list[1]
-              elif event_name_list[0] == 'event_count':
-                  namespace=environ['EVENT_NAMESPACE']
-                  metricname=event_name_list[1]
-              elif event_name_list[0] == 'referral_count':
-                  namespace=environ['REFERRAL_NAMESPACE']
-                  metricname=event_name_list[1]
-              elif event_name_list[0] == 'top_pages':
-                  namespace=environ['PAGEVIEW_NAMESPACE']
-                  metricname=event_name_list[1]
-              elif event_name_list[0] == 'event_anomaly':
-                  namespace=environ['ANOMALY_NAMESPACE']
-                  metricname=event_name_list[1]
-              elif event_name_list[0] == 'visitor_count':
-                  namespace=environ['EVENT_NAMESPACE']
-                  metricname=event_name_list[0]
-              metricData=[{
-                      'MetricName': metricname,
-                      'Timestamp': datetime.strptime(event_datetime, '%Y-%m-%dT%H:%M:%S'),
-                      'Value': event_count,
-                      'Unit': 'Count',
-                      'StorageResolution': 1
-                  },]
-              response = cwc.put_metric_data(Namespace=namespace,MetricData=metricData)
+            import boto3
+            import sys
+            from os import environ
+            from datetime import datetime
+
+            tablename = environ['METRICS_TABLE']
+            region= environ['AWS_REGION']
+
+            DynamoDBClient = boto3.client('dynamodb', region_name=region)
+            allMetrics = DynamoDBClient.scan(
+            TableName=tablename,
+            Select='ALL_ATTRIBUTES'
+            )
+
+          def isWholeNumber(metric_type):
+            for metric_meta in allMetrics['Items']:
+              if metric_meta['MetricType']['S'] == metric_type:
+                return metric_meta['IsWholeNumber']['BOOL'] == True
+
+          def prettyUp(s):
+            pretty = ""
+            parts = s.split("_")
+            for part in parts:
+              pretty = pretty + part[:1].upper() + part[1:]
+            return pretty
 
           def lambda_handler(event, context):
-              events_int = defaultdict(int)
-              events_float = defaultdict(float)
-              for record in event['Records']:
-
-                  for metric in record['dynamodb']['NewImage']['MetricDetails']['L']:
-                      try: event_timestamp = metric['M']['EVENTTIMESTAMP']['N']
-                      except Exception as e:
-                          event_timestamp='NULL'
-
-                      if event_timestamp!='NULL':
-                          timestamp = float(event_timestamp) / 1000
-                          event_time = datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%dT%H:%M:%S')
-
-                      metric_field = metric['M']['METRICTYPE']['S']
-                      if metric_field=='agent_count' or metric_field=='event_count' or metric_field=='referral_count' or metric_field=='top_pages':
-                          if metric['M']['METRICITEM']['S'] == 'null':
-                              event_type = metric_field + ':No referrer'
-                          else:
-                              event_type = metric_field + ':' + metric['M']['METRICITEM']['S']
-                          event_value = metric['M']['UNITVALUEINT']['N']
-                          events_int[(event_type, event_time)] = int(event_value)
-                      elif metric_field == 'event_anomaly':
-                          event_type_list = metric['M']['METRICITEM']['S'].split(':')
-                          event_type = metric_field + ':' + event_type_list[0] # split on : later
-                          event_value = metric['M']['UNITVALUEFLOAT']['N']
-                          events_float[(event_type, event_time)] = float(event_value)
-                      elif metric_field == 'visitor_count':
-                          event_type = metric_field
-                          event_value = metric['M']['UNITVALUEINT']['N']
-                          events_int[(event_type, event_time)] = int(event_value)
-                      else: event_type = 'NULL'
-                
-                      if event_type!='NULL' and event_timestamp!='NULL':
-                          if 'NULL' in metric['M']['UNITVALUEFLOAT']:
-                              events_int[(event_type, event_time)] = int(event_value)
-                          else:
-                              events_float[(event_type, event_time)] = float(event_value)
-
-              for key,val in events_int.iteritems():
-                  print "%s, %s = %d" % (key[0], key[1], val)
-                  put_cloudwatch_metric(key[0], key[1], int(val))
-              for key,val in events_float.iteritems():
-                  print "%s, %s = %f" % (key[0], key[1], val)
-                  put_cloudwatch_metric(key[0], key[1], float(val))
-              return 'Successfully processed {} records.'.format(len(event['Records']))
+            for record in event['Records']:
+              metricData = []
+              try:
+                event_timestamp = record['dynamodb']['NewImage']['EventTimestamp']['N']
+                timestamp = float(event_timestamp) / 1000
+                event_time = datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%dT%H:%M:%S')
+                print('event_time=' + event_time)
+                metric_type =  record['dynamodb']['NewImage']['MetricType']['S']
+                is_metric_int = isWholeNumber(metric_type)
+                for metric_detail in record['dynamodb']['NewImage']['MetricDetails']['L']:
+                  if is_metric_int:
+                    value = float(metric_detail['M']['UNITVALUEINT']['N'])
+                  else:
+                    value = float(metric_detail['M']['UNITVALUEFLOAT']['N'])
+                  if metric_detail['M']['METRICITEM']['S'] == 'null':
+                    metricname = metric_type
+                  else:
+                    metricname = metric_detail['M']['METRICITEM']['S']
+                  metricDataItem={
+                  'MetricName': metricname,
+                  'Timestamp': event_time,
+                  'Value': value,
+                  'Unit': 'None',
+                  'StorageResolution': 1
+                  }
+                  metricData.append(metricDataItem)
+                namespace = prettyUp(metric_type)
+                print('metrics to cwc = {}'.format(metricData))
+                cwc=boto3.client('cloudwatch')
+                response = cwc.put_metric_data(Namespace=namespace,MetricData=metricData)
+                print(response)
+              except: # skip when records are removed via TTL
+                print('Skip removed records ({})'.format(sys.exc_info()[0]))
+              #raise
+            return 'Successfully processed records.'
       Environment:
         Variables:
-          AGENT_NAMESPACE: EventAgents
+          METRICS_TABLE: EventAgents
           ANOMALY_NAMESPACE: EventAnomalies
           EVENT_NAMESPACE: EventCounts
           PAGEVIEW_NAMESPACE: PageviewCounts

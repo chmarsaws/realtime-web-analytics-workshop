@@ -715,14 +715,13 @@ Resources:
                   - ${Param1}*
                   - Param1: !GetAtt ProcessMetricsFunction.Arn
               - Sid: WriteOutputStram
-                  Effect: Allow
-                  Action:
+                Effect: Allow
+                Action:
                   - kinesis:PutRecord
                   - kinesis:PutRecords
                   - kinesis:DescribeStream
-                  Resource:
+                Resource:
                   - !GetAtt 'OutputStream.Arn'
-
   KinesisAnalyticsApp:
     Type: AWS::KinesisAnalytics::Application
     Properties:
@@ -984,6 +983,8 @@ Resources:
       TimeToLiveSpecification:
         AttributeName: ExpireTime
         Enabled: true
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
 
   DDBScalingRole:
     Type: AWS::IAM::Role
@@ -1144,19 +1145,8 @@ Resources:
         Variables:
           METRIC_TABLE: !Ref MetricTable
           METRIC_DETAILS_TABLE: !Ref MetricDetailsTable
-          SOLUTION_UUID: !GetAtt GenerateUUID.UUID
-          SOLUTION_ID: !FindInMap
-            - Solution
-            - Data
-            - ID
-          SOLUTION_VERSION: !FindInMap
-            - Solution
-            - Data
-            - Version
-          SEND_ANONYMOUS_DATA: !FindInMap
-            - Solution
-            - Data
-            - SendAnonymousUsageData
+          PULL_FROM_STREAMS: 'Y'
+
       Description: Solution Accelerator for Web Analytics - Function to process metrics.
       Handler: index.handler
       MemorySize: 256

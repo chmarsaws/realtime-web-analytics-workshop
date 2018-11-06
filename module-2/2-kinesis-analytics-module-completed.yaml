@@ -714,7 +714,14 @@ Resources:
                 Resource: !Sub
                   - ${Param1}*
                   - Param1: !GetAtt ProcessMetricsFunction.Arn
-
+              - Sid: WriteOutputStram
+                Effect: Allow
+                Action:
+                  - kinesis:PutRecord
+                  - kinesis:PutRecords
+                  - kinesis:DescribeStream
+                Resource:
+                  - !GetAtt 'OutputStream.Arn'
   KinesisAnalyticsApp:
     Type: AWS::KinesisAnalytics::Application
     Properties:
@@ -925,20 +932,29 @@ Resources:
           KinesisFirehoseInput:
             ResourceARN: !Sub 'arn:aws:firehose:${AWS::Region}:${AWS::AccountId}:deliverystream/${DeliveryStream}'
             RoleARN: !GetAtt 'KinesisAnalyticsRole.Arn'
-  AnaliticsOutput:
-    Type: AWS::KinesisAnalytics::ApplicationOutput 
-    DependsOn: KinesisAnalyticsApp
+
+  KinesisAnalyticsAppAnomalyOutput:
+    Type: AWS::KinesisAnalytics::ApplicationOutput
     Properties:
-      ApplicationName: !Sub '${AWS::StackName}-WebMetricsApplication'
-      Output: 
-        DestinationSchema: 
+      ApplicationName: !Ref KinesisAnalyticsApp
+      Output:
+        DestinationSchema:
           RecordFormatType: JSON
-        LambdaOutput: 
-          ResourceARN: !GetAtt ProcessMetricsFunction.Arn
+        KinesisStreamsOutput:
+          ResourceARN: !GetAtt OutputStream.Arn
           RoleARN: !GetAtt KinesisAnalyticsRole.Arn
         Name: DESTINATION_SQL_STREAM
 
-# Metric Storage
+# Kinesis Stream
+  OutputStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: !Sub '${AWS::StackName}-OutputStream'
+      RetentionPeriodHours: 24
+      ShardCount: 1
+
+
+  # Metric Storage
   MetricTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -1105,6 +1121,15 @@ Resources:
                   - logs:PutLogEvents
                 Resource:
                   - !Join ["", ["arn:aws:logs:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":log-group:/aws/lambda/*"]]
+              - Sid: AccessOutputStream
+                Effect: Allow
+                Action:
+                - kinesis:GetRecords
+                - kinesis:GetShardIterator
+                - kinesis:DescribeStream
+                - kinesis:ListStreams
+                Resource:
+                - !GetAtt OutputStream.Arn
 
   ProcessMetricsFunction:
     Type: AWS::Lambda::Function
@@ -1126,25 +1151,23 @@ Resources:
         Variables:
           METRIC_TABLE: !Ref MetricTable
           METRIC_DETAILS_TABLE: !Ref MetricDetailsTable
-          SOLUTION_UUID: !GetAtt GenerateUUID.UUID
-          SOLUTION_ID: !FindInMap
-            - Solution
-            - Data
-            - ID
-          SOLUTION_VERSION: !FindInMap
-            - Solution
-            - Data
-            - Version
-          SEND_ANONYMOUS_DATA: !FindInMap
-            - Solution
-            - Data
-            - SendAnonymousUsageData
+          PULL_FROM_STREAMS: 'Y'
+
       Description: Solution Accelerator for Web Analytics - Function to process metrics.
       Handler: index.handler
       MemorySize: 256
       Role: !GetAtt ProcessMetricsLambdaRole.Arn
       Runtime: nodejs6.10
       Timeout: 300
+
+ProcessEventSourceMapping:
+  Type: AWS::Lambda::EventSourceMapping
+  Properties:
+    BatchSize: 100
+    Enabled: true
+    EventSourceArn: !GetAtt OutputStream.Arn
+    FunctionName: !GetAtt ProcessMetricsFunction.Arn
+    StartingPosition: 'LATEST'
 
 # Helper Functions
   CustomResourceHelperRole:
