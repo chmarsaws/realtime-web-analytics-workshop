@@ -714,6 +714,14 @@ Resources:
                 Resource: !Sub
                   - ${Param1}*
                   - Param1: !GetAtt ProcessMetricsFunction.Arn
+              - Sid: WriteOutputStram
+                  Effect: Allow
+                  Action:
+                  - kinesis:PutRecord
+                  - kinesis:PutRecords
+                  - kinesis:DescribeStream
+                  Resource:
+                  - !GetAtt 'OutputStream.Arn'
 
   KinesisAnalyticsApp:
     Type: AWS::KinesisAnalytics::Application
@@ -920,7 +928,28 @@ Resources:
             ResourceARN: !Sub 'arn:aws:firehose:${AWS::Region}:${AWS::AccountId}:deliverystream/${DeliveryStream}'
             RoleARN: !GetAtt 'KinesisAnalyticsRole.Arn'
 
-# Metric Storage
+  KinesisAnalyticsAppAnomalyOutput:
+    Type: AWS::KinesisAnalytics::ApplicationOutput
+    Properties:
+      ApplicationName: !Ref KinesisAnalyticsApp
+      Output:
+        DestinationSchema:
+          RecordFormatType: JSON
+        KinesisStreamsOutput:
+          ResourceARN: !GetAtt OutputStream.Arn
+          RoleARN: !GetAtt KinesisAnalyticsRole.Arn
+        Name: DESTINATION_SQL_STREAM
+
+# Kinesis Stream
+  OutputStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: !Sub '${AWS::StackName}-OutputStream'
+      RetentionPeriodHours: 24
+      ShardCount: 1
+
+
+  # Metric Storage
   MetricTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -1085,6 +1114,15 @@ Resources:
                   - logs:PutLogEvents
                 Resource:
                   - !Join ["", ["arn:aws:logs:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":log-group:/aws/lambda/*"]]
+              - Sid: AccessOutputStream
+                Effect: Allow
+                Action:
+                - kinesis:GetRecords
+                - kinesis:GetShardIterator
+                - kinesis:DescribeStream
+                - kinesis:ListStreams
+                Resource:
+                - !GetAtt OutputStream.Arn
 
   ProcessMetricsFunction:
     Type: AWS::Lambda::Function
