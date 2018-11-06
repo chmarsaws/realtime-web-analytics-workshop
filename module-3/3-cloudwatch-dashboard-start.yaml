@@ -1160,14 +1160,14 @@ Resources:
       Runtime: nodejs6.10
       Timeout: 300
 
-ProcessEventSourceMapping:
-  Type: AWS::Lambda::EventSourceMapping
-  Properties:
-    BatchSize: 100
-    Enabled: true
-    EventSourceArn: !GetAtt OutputStream.Arn
-    FunctionName: !GetAtt ProcessMetricsFunction.Arn
-    StartingPosition: 'LATEST'
+  ProcessEventSourceMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 100
+      Enabled: true
+      EventSourceArn: !GetAtt OutputStream.Arn
+      FunctionName: !GetAtt ProcessMetricsFunction.Arn
+      StartingPosition: 'LATEST'
 
 # Lambda Cloudwatch Metrics Publishing Function
   PublishMetricsLambdaRole:
@@ -1194,9 +1194,10 @@ ProcessEventSourceMapping:
                   - dynamodb:GetRecords
                   - dynamodb:GetShardIterator
                   - dynamodb:ListStreams
+                  - dynamodb:Scan
                 Resource:
                   - !Sub "${MetricDetailsTable.Arn}/stream/*"
-                  - !Ref MetricTable
+                  - !GetAtt MetricTable.Arn
               - Sid: CWLogs
                 Effect: Allow
                 Action:
@@ -1225,19 +1226,19 @@ ProcessEventSourceMapping:
           ## METRICS_TABLE = DynamoDB table containing all metric types              ##
           #############################################################################
 
-            import boto3
-            import sys
-            from os import environ
-            from datetime import datetime
+          import boto3
+          import sys
+          from os import environ
+          from datetime import datetime
 
-            tablename = environ['METRICS_TABLE']
-            region= environ['AWS_REGION']
+          tablename = environ['METRICS_TABLE']
+          region= environ['AWS_REGION']
 
-            DynamoDBClient = boto3.client('dynamodb', region_name=region)
-            allMetrics = DynamoDBClient.scan(
-            TableName=tablename,
-            Select='ALL_ATTRIBUTES'
-            )
+          DynamoDBClient = boto3.client('dynamodb', region_name=region)
+          allMetrics = DynamoDBClient.scan(
+          TableName=tablename,
+          Select='ALL_ATTRIBUTES'
+          )
 
           def isWholeNumber(metric_type):
             for metric_meta in allMetrics['Items']:
@@ -1289,18 +1290,13 @@ ProcessEventSourceMapping:
             return 'Successfully processed records.'
       Environment:
         Variables:
-          METRICS_TABLE: EventAgents
-          ANOMALY_NAMESPACE: EventAnomalies
-          EVENT_NAMESPACE: EventCounts
-          PAGEVIEW_NAMESPACE: PageviewCounts
-          REFERRAL_NAMESPACE: ReferralCounts
-          REGION: !Ref AWS::Region
+          METRICS_TABLE: !Ref MetricTable
       Description: Solution Accelerator for Web Analytics - Function to publish metrics
       Handler: index.lambda_handler
       MemorySize: 128
       Role: !GetAtt PublishMetricsLambdaRole.Arn
       Runtime: python2.7
-      Timeout: 300
+      Timeout: 1000
 
 # Helper Functions
   CustomResourceHelperRole:
