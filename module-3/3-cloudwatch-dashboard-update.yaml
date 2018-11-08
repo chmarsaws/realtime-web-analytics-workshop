@@ -1244,6 +1244,10 @@ Resources:
                 cwc=boto3.client('cloudwatch')
                 response = cwc.put_metric_data(Namespace=namespace,MetricData=metricData)
                 print(response)
+              except KeyError:
+                allMetrics = DynamoDBClient.scan(TableName=tablename,Select='ALL_ATTRIBUTES')
+                print('reload metrics')
+                raise
               except: # skip when records are removed via TTL
                 print('Skip removed records ({})'.format(sys.exc_info()[0]))
                 #raise

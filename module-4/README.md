@@ -153,12 +153,12 @@ SELECT
     FROM (
         SELECT STREAM 'All Pages' as MetricItem,
         AVG(weblogs."custom_metric_int_value") as average_ms,
-        STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ssz',weblogs."datetime") by INTERVAL '60' SECOND) as eventTimestamp
+        STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ssz',weblogs."datetime") by INTERVAL '10' SECOND) as eventTimestamp
         FROM "WASA_001" weblogs
         WHERE weblogs."custom_metric_name" = 'page_load_time'
         GROUP BY
-        STEP (weblogs.ROWTIME BY INTERVAL '60' SECOND),
-        STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ssz',weblogs."datetime") by INTERVAL '60' SECOND)
+        STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND),
+        STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ssz',weblogs."datetime") by INTERVAL '10' SECOND)
     ); 
 ```
 Notes:
