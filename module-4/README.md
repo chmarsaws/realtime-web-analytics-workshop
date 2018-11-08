@@ -64,7 +64,8 @@ The DynamoDB table named **stack-name**-Metrics initially contains seven items r
 
 ![Append Item](../images/4-insert-item.png)
 
-7.  Use the same method and append **IsSet** Binary : false, **IsWholeNumber** Binary : true, **LatestEventTimestamp** Number : 0  
+7.  Use the same method and append **IsSet** Boolean : false, **IsWholeNumber** Boolean : true, **LatestEventTimestamp** Number : 0 
+Note: Ensure you select the type **Boolean** and not Binary. 
 
 ![Append Item Fields](../images/4-insert-item-fields.png)
 
@@ -108,7 +109,7 @@ s = requests.Session()
 while (i < int(args.calls)):
     time.sleep(float(args.delay))
     loadTime = generateRandomLoadTime()
-    headers = {'custom_metric_name' : 'page_load_time', 'custom_metric_int_value' : loadTime }
+    headers = {'custom_metric_name' : 'page_load_time', 'custom_metric_int_value' : str(loadTime) }
     r = s.post(args.target + '?call=' + str(i),headers=headers)
     if(r.status_code==200):
         sys.stdout.write( str(i) + "-")
@@ -138,6 +139,8 @@ Then execute the script replacing the **BEACONURL** with the ELB for your pipeli
 4.  Create a pump that takes the incoming records where the **custom_metric_name** is **page_load_time** and calculate an average over a one minute window.  
 <details>
 <summary><strong>SQL Statement (expand for code)</strong></summary><p>    
+
+Leave the existing SQL in the editor and add the following to the end of the existing SQL statements.
 
 ```SQL
 CREATE OR REPLACE PUMP "PAGELOAD_PUMP" AS
@@ -169,7 +172,6 @@ Notes:
 <details>
 <summary><strong>Create a new CloudWatch graph to show average page load (expand for details)</strong></summary><p>  
 
-    Luke, can your Lambda handle custom metrics in a generic way?  
 
 </details>
 

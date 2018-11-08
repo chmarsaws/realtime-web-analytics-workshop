@@ -31,30 +31,30 @@ Parameters:
     Description: "Optional: Availability Zone number for public subnet #1."
     Default: 0
     AllowedValues:
-    - 0
-    - 1
-    - 2
-    - 3
-    - 4
-    - 5
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
   AZ1:
     Type: String
     Description: "Optional: Availability Zone number for public subnet #2."
     Default: 1
     AllowedValues:
-    - 0
-    - 1
-    - 2
-    - 3
-    - 4
-    - 5
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
   NodeSize:
     Type: String
     Description: "Number of requests per minute that each beacon node will support (50K = t2.medium, 100K = m5.large)."
     Default: 50K
     AllowedValues:
-    - 50K
-    - 100K
+      - 50K
+      - 100K
   AutoScalingMinSize:
     Type: Number
     Description: "Minimum number of beacon webservers (must be at least 2 for high availability)."
@@ -70,8 +70,8 @@ Parameters:
     Description: "Create a CloudWatch dashboard for beacon server operational metrics?"
     Default: Yes
     AllowedValues:
-    - Yes
-    - No
+      - Yes
+      - No
   LatestAmiId:
     Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
     Default: '/aws/service/ami-amazon-linux-latest/amzn-ami-hvm-x86_64-gp2'
@@ -79,23 +79,23 @@ Parameters:
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
-    - Label:
-        default: "Beacon Web Server Configuration"
-      Parameters:
-      - CWDashboard
-      - BeaconSourceCIDR
-      - CorsOrig
-      - NodeSize
-      - AutoScalingMinSize
-      - AutoScalingMaxSize
-    - Label:
-        default: "Optional: VPC Configuration"
-      Parameters:
-      - VpcCidr
-      - Subnet0Cidr
-      - Subnet1Cidr
-      - AZ0
-      - AZ1
+      - Label:
+          default: "Beacon Web Server Configuration"
+        Parameters:
+          - CWDashboard
+          - BeaconSourceCIDR
+          - CorsOrig
+          - NodeSize
+          - AutoScalingMinSize
+          - AutoScalingMaxSize
+      - Label:
+          default: "Optional: VPC Configuration"
+        Parameters:
+          - VpcCidr
+          - Subnet0Cidr
+          - Subnet1Cidr
+          - AZ0
+          - AZ1
     ParameterLabels:
       CWDashboard:
         default: CloudWatch Dashboard
@@ -153,7 +153,7 @@ Conditions:
 
 Resources:
 
-  # Beacon Server Networking
+# Beacon Server Networking
   VPC:
     Type: AWS::EC2::VPC
     Properties:
@@ -161,8 +161,8 @@ Resources:
       EnableDnsSupport: true
       EnableDnsHostnames: true
       Tags:
-      - Key: Name
-        Value: !Sub '${AWS::StackName}-vpc'
+        - Key: Name
+          Value: !Sub '${AWS::StackName}-vpc'
 
   Subnet0:
     Type: AWS::EC2::Subnet
@@ -171,12 +171,12 @@ Resources:
       CidrBlock: !Ref Subnet0Cidr
       AvailabilityZone:
         !Select
-      - !Ref AZ0
-      - !GetAZs
+          - !Ref AZ0
+          - !GetAZs
       VpcId: !Ref VPC
       Tags:
-      - Key: Name
-        Value: !Sub '${AWS::StackName}-subnet-0'
+        - Key: Name
+          Value: !Sub '${AWS::StackName}-subnet-0'
 
   Subnet1:
     Type: AWS::EC2::Subnet
@@ -185,19 +185,19 @@ Resources:
       CidrBlock: !Ref Subnet1Cidr
       AvailabilityZone:
         !Select
-      - !Ref AZ1
-      - !GetAZs
+          - !Ref AZ1
+          - !GetAZs
       VpcId: !Ref VPC
       Tags:
-      - Key: Name
-        Value: !Sub '${AWS::StackName}-subnet-1'
+        - Key: Name
+          Value: !Sub '${AWS::StackName}-subnet-1'
 
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
-      - Key: Name
-        Value: !Sub '${AWS::StackName}-ig'
+        - Key: Name
+          Value: !Sub '${AWS::StackName}-ig'
 
   GatewayAttachment:
     Type: AWS::EC2::VPCGatewayAttachment
@@ -210,8 +210,8 @@ Resources:
     Properties:
       VpcId: !Ref VPC
       Tags:
-      - Key: Name
-        Value: !Sub '${AWS::StackName}-public-route-table'
+        - Key: Name
+          Value: !Sub '${AWS::StackName}-public-route-table'
 
   PublicRoute:
     Type: AWS::EC2::Route
@@ -233,24 +233,24 @@ Resources:
       RouteTableId: !Ref RouteTable
       SubnetId: !Ref Subnet1
 
-  # AutoScaling and LoadBalancing
+# AutoScaling and LoadBalancing
   AutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       VPCZoneIdentifier:
-      - !Ref Subnet0
-      - !Ref Subnet1
+        - !Ref Subnet0
+        - !Ref Subnet1
       LaunchConfigurationName: !Ref AutoScalingGroupLaunchConfig
       MinSize: !Ref AutoScalingMinSize
       MaxSize: !Ref AutoScalingMaxSize
       HealthCheckGracePeriod: 300
       HealthCheckType: ELB
       TargetGroupARNs:
-      - !Ref TargetGroup
+        - !Ref TargetGroup
       Tags:
-      - Key: "Name"
-        Value: !Sub '${AWS::StackName}-beacon-web-server'
-        PropagateAtLaunch: true
+        - Key: "Name"
+          Value: !Sub '${AWS::StackName}-beacon-web-server'
+          PropagateAtLaunch: true
     CreationPolicy:
       ResourceSignal:
         Timeout: PT15M
@@ -260,11 +260,11 @@ Resources:
         MaxBatchSize: 1
         PauseTime: PT15M
         SuspendProcesses:
-        - HealthCheck
-        - ReplaceUnhealthy
-        - AZRebalance
-        - AlarmNotification
-        - ScheduledActions
+          - HealthCheck
+          - ReplaceUnhealthy
+          - AZRebalance
+          - AlarmNotification
+          - ScheduledActions
         WaitOnResourceSignals: true
 
   PacketsAlarmHigh:
@@ -276,11 +276,11 @@ Resources:
       AlarmDescription: Alarm if Network Packets In too high or metric disappears indicating instance is under high load
       Period: 60
       AlarmActions:
-      - !Ref ScaleUpPolicy
+        - !Ref ScaleUpPolicy
       Namespace: AWS/EC2
       Dimensions:
-      - Name: AutoScalingGroupName
-        Value: !Ref AutoScalingGroup
+        - Name: AutoScalingGroupName
+          Value: !Ref AutoScalingGroup
       ComparisonOperator: GreaterThanThreshold
       MetricName: NetworkPacketsIn
 
@@ -301,11 +301,11 @@ Resources:
       AlarmDescription: Alarm if Network Packets In are too low and indicating that we can shed instances
       Period: 60
       AlarmActions:
-      - !Ref ScaleDownPolicy
+        - !Ref ScaleDownPolicy
       Namespace: AWS/EC2
       Dimensions:
-      - Name: AutoScalingGroupName
-        Value: !Ref AutoScalingGroup
+        - Name: AutoScalingGroupName
+          Value: !Ref AutoScalingGroup
       ComparisonOperator: LessThanThreshold
       MetricName: NetworkPacketsIn
 
@@ -341,8 +341,8 @@ Resources:
                       {
                         "optionName": "LOGTOJSON",
                         "logFormat":"COMBINEDAPACHELOG",
-                        "matchPattern": "^([\\d.]+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(.+?)\" (\\d{3}) ([0-9]+) \"(.+?)\" \"(.+?)\" \"(.+?)\" \"(.+?)\" \"(.+?)\"$",
-                        "customFieldNames": ["host", "ident", "authuser", "datetime", "request", "response", "bytes", "referrer", "agent", "event", "clientid", "page"]
+                        "matchPattern": "^([\\d.]+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(.+?)\" (\\d{3}) ([0-9]+) \"(.+?)\" \"(.+?)\" \"(.+?)\" \"(.+?)\" \"(.+?)\" \"(.+?)\" \"(.+?)\" \"(.+?)\" \"(.+?)\"$",
+                        "customFieldNames": ["host", "ident", "authuser", "datetime", "request", "response", "bytes", "referrer", "agent", "event", "clientid", "page", "custom_metric_name", "custom_metric_int_value", "custom_metric_float_value", "custom_metric_string_value"]
                       }
                       ]
                     }
@@ -397,25 +397,25 @@ Resources:
               command: sed -i 's/LogFormat "%h %l %u %t \\"%r\\" %>s %b \\"%{Referer}i\\"
                 \\"%{User-Agent}i\\"" combined/LogFormat "%h %l %u %t \\"%r\\" %>s
                 %b \\"%{Referer}i\\" \\"%{User-Agent}i\\" \\"%{event}i\\" \\"%{clientid}i\\"
-                \\"%{page}i\\"" combined/' /etc/httpd/conf/httpd.conf
+                \\"%{page}i\\" \\"%{custom_metric_name}i\\" \\"%{custom_metric_int_value}i\\" \\"%{custom_metric_float_value}i\\" \\"%{custom_metric_string_value}i\\"" combined/' /etc/httpd/conf/httpd.conf
           services:
             sysvinit:
               httpd:
                 enabled: 'true'
                 ensureRunning: 'true'
                 files:
-                - /etc/init.d/httpd
+                  - /etc/init.d/httpd
               aws-kinesis-agent:
                 enabled: 'true'
                 ensureRunning: 'true'
                 files:
-                - /etc/init.d/aws-kinesis-agent
+                  - /etc/init.d/aws-kinesis-agent
     Properties:
       ImageId: !Ref LatestAmiId
       InstanceType: !FindInMap [Sizing, !Ref NodeSize, InstanceType]
       IamInstanceProfile: !Ref WebServerInstanceProfile
       SecurityGroups:
-      - !Ref WebServerNonSSLSecurityGroup
+        - !Ref WebServerNonSSLSecurityGroup
       UserData: !Base64
         Fn::Sub: |
           #!/bin/bash -xe
@@ -423,9 +423,9 @@ Resources:
           /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource AutoScalingGroupLaunchConfig --region ${AWS::Region}
           /opt/aws/bin/cfn-signal -e $? --region ${AWS::Region} --stack ${AWS::StackName} --resource AutoScalingGroup
       BlockDeviceMappings:
-      - DeviceName: /dev/xvda
-        Ebs:
-          VolumeSize: 8
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 8
 
   PatchingAssociation:
     Type: AWS::SSM::Association
@@ -434,29 +434,29 @@ Resources:
       Name: AWS-RunPatchBaseline
       Parameters:
         Operation:
-        - Install
+          - Install
       ScheduleExpression: rate(1 day)
       Targets:
-      - Key: tag:aws:cloudformation:stack-name
-        Values:
-        - !Ref AWS::StackName
+        - Key: tag:aws:cloudformation:stack-name
+          Values:
+            - !Ref AWS::StackName
 
   ApplicationLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Scheme: internet-facing
       Subnets:
-      - !Ref Subnet0
-      - !Ref Subnet1
+        - !Ref Subnet0
+        - !Ref Subnet1
       SecurityGroups:
-      - !GetAtt ALBSecurityGroup.GroupId
+        - !GetAtt ALBSecurityGroup.GroupId
 
   ALBListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       DefaultActions:
-      - Type: forward
-        TargetGroupArn: !Ref TargetGroup
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
       LoadBalancerArn: !Ref ApplicationLoadBalancer
       Port: 80
       Protocol: HTTP
@@ -475,8 +475,8 @@ Resources:
       TargetType: instance
       VpcId: !Ref VPC
       Tags:
-      - Key: 'Name'
-        Value: !Sub '${AWS::StackName}-target-group'
+        - Key: 'Name'
+          Value: !Sub '${AWS::StackName}-target-group'
 
   ALBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -484,10 +484,10 @@ Resources:
       GroupDescription: Web traffic for ALB
       VpcId: !Ref VPC
       SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: 80
-        ToPort: 80
-        CidrIp: !Ref BeaconSourceCIDR
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: !Ref BeaconSourceCIDR
 
   WebServerNonSSLSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -495,13 +495,13 @@ Resources:
       GroupDescription: Web port only (80)
       VpcId: !Ref VPC
       SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: 80
-        ToPort: 80
-        SourceSecurityGroupId: !Ref ALBSecurityGroup
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          SourceSecurityGroupId: !Ref ALBSecurityGroup
       SecurityGroupEgress:
-      - IpProtocol: '-1'
-        CidrIp: 0.0.0.0/0
+        - IpProtocol: '-1'
+          CidrIp: 0.0.0.0/0
 
 
   WebServerInstanceProfile:
@@ -509,7 +509,7 @@ Resources:
     Properties:
       Path: /WebServerInstanceProfile/
       Roles:
-      - !Ref WebServerKinesisRole
+        - !Ref WebServerKinesisRole
 
   WebServerKinesisRole:
     Type: AWS::IAM::Role
@@ -517,109 +517,117 @@ Resources:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - ec2.amazonaws.com
-          Action:
-          - sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
       Policies:
-      - PolicyName: puttofirehose
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-            - firehose:PutRecord
-            - firehose:PutRecordBatch
-            Resource:
-            - !GetAtt 'DeliveryStream.Arn'
-      - PolicyName: ssmagent
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-            - ssm:DescribeAssociation
-            - ssm:GetDeployablePatchSnapshotForInstance
-            - ssm:GetDocument
-            - ssm:GetManifest
-            - ssm:GetParameters
-            - ssm:ListAssociations
-            - ssm:ListInstanceAssociations
-            - ssm:PutInventory
-            - ssm:PutComplianceItems
-            - ssm:PutConfigurePackageResult
-            - ssm:UpdateAssociationStatus
-            - ssm:UpdateInstanceAssociationStatus
-            - ssm:UpdateInstanceInformation
-            Resource: '*'
-          - Effect: Allow
-            Action:
-            - ec2messages:AcknowledgeMessage
-            - ec2messages:DeleteMessage
-            - ec2messages:FailMessage
-            - ec2messages:GetEndpoint
-            - ec2messages:GetMessages
-            - ec2messages:SendReply
-            Resource: '*'
-          - Effect: Allow
-            Action:
-            - cloudwatch:PutMetricData
-            Resource: '*'
-          - Effect: Allow
-            Action:
-            - ec2:DescribeInstanceStatus
-            Resource: '*'
-            Condition:
-              StringEquals:
-                ec2:ResourceTag/tag:aws:cloudformation:stack-name:
-                  Ref: AWS::StackName
-          - Effect: Allow
-            Action:
-            - logs:CreateLogGroup
-            - logs:CreateLogStream
-            - logs:DescribeLogGroups
-            - logs:DescribeLogStreams
-            - logs:PutLogEvents
-            Resource: '*'
+        - PolicyName: puttofirehose
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - firehose:PutRecord
+                  - firehose:PutRecordBatch
+                Resource:
+                  - !GetAtt 'DeliveryStream.Arn'
+        - PolicyName: ssmagent
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ssm:DescribeAssociation
+                  - ssm:GetDeployablePatchSnapshotForInstance
+                  - ssm:GetDocument
+                  - ssm:GetManifest
+                  - ssm:GetParameters
+                  - ssm:ListAssociations
+                  - ssm:ListInstanceAssociations
+                  - ssm:PutInventory
+                  - ssm:PutComplianceItems
+                  - ssm:PutConfigurePackageResult
+                  - ssm:UpdateAssociationStatus
+                  - ssm:UpdateInstanceAssociationStatus
+                  - ssm:UpdateInstanceInformation
+                  - ssmmessages:CreateControlChannel
+                  - ssmmessages:CreateDataChannel
+                  - ssmmessages:OpenControlChannel
+                  - ssmmessages:OpenDataChannel
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - s3:GetEncryptionConfiguration
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - ec2messages:AcknowledgeMessage
+                  - ec2messages:DeleteMessage
+                  - ec2messages:FailMessage
+                  - ec2messages:GetEndpoint
+                  - ec2messages:GetMessages
+                  - ec2messages:SendReply
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - cloudwatch:PutMetricData
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - ec2:DescribeInstanceStatus
+                Resource: '*'
+                Condition:
+                  StringEquals:
+                    ec2:ResourceTag/tag:aws:cloudformation:stack-name:
+                      Ref: AWS::StackName
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:DescribeLogGroups
+                  - logs:DescribeLogStreams
+                  - logs:PutLogEvents
+                Resource: '*'
 
-  # Kinesis Firehose
+# Kinesis Firehose
   DeliveryStreamRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - firehose.amazonaws.com
-          Action:
-          - sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service:
+                - firehose.amazonaws.com
+            Action:
+              - sts:AssumeRole
       Policies:
-      - PolicyName: s3Access
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Sid: ''
-            Effect: Allow
-            Action:
-            - s3:AbortMultipartUpload
-            - s3:GetBucketLocation
-            - s3:GetObject
-            - s3:ListBucket
-            - s3:ListBucketMultipartUploads
-            - s3:PutObject
-            Resource:
-            - !Sub '${AnalyticsBucket.Arn}'
-            - !Sub '${AnalyticsBucket.Arn}/*'
-          - Sid: ''
-            Effect: Allow
-            Action:
-            - logs:PutLogEvents
-            Resource:
-            - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/kinesisfirehose/*:log-stream:*'
+        - PolicyName: s3Access
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: ''
+                Effect: Allow
+                Action:
+                  - s3:AbortMultipartUpload
+                  - s3:GetBucketLocation
+                  - s3:GetObject
+                  - s3:ListBucket
+                  - s3:ListBucketMultipartUploads
+                  - s3:PutObject
+                Resource:
+                  - !Sub '${AnalyticsBucket.Arn}'
+                  - !Sub '${AnalyticsBucket.Arn}/*'
+              - Sid: ''
+                Effect: Allow
+                Action:
+                  - logs:PutLogEvents
+                Resource:
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/kinesisfirehose/*:log-stream:*'
 
   DeliveryStream:
     Type: AWS::KinesisFirehose::DeliveryStream
@@ -637,262 +645,262 @@ Resources:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
 
-  # Kinesis Analytics Application
+# Kinesis Analytics Application
   KinesisAnalyticsRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - kinesisanalytics.amazonaws.com
-          Action:
-          - sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service:
+                - kinesisanalytics.amazonaws.com
+            Action:
+              - sts:AssumeRole
       Policies:
-      - PolicyName: kinesisaccess
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Sid: ReadInputStream
-            Effect: Allow
-            Action:
-            - firehose:DescribeDeliveryStream
-            - firehose:Get*
-            Resource:
-            - !GetAtt 'DeliveryStream.Arn'
-          - Sid: LisInputStream
-            Effect: Allow
-            Action:
-            - firehose:ListDeliveryStreams
-            Resource: '*'
-          - Sid: InvokeLambda
-            Effect: Allow
-            Action:
-            - lambda:InvokeFunction
-            - lambda:GetFunctionConfiguration
-            Resource: !Sub
-            - ${Param1}*
-            - Param1: !GetAtt ProcessMetricsFunction.Arn
-          - Sid: WriteOutputStram
-            Effect: Allow
-            Action:
-            - kinesis:PutRecord
-            - kinesis:PutRecords
-            - kinesis:DescribeStream
-            Resource:
-            - !GetAtt 'OutputStream.Arn'
+        - PolicyName: kinesisaccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: ReadInputStream
+                Effect: Allow
+                Action:
+                  - firehose:DescribeDeliveryStream
+                  - firehose:Get*
+                Resource:
+                  - !GetAtt 'DeliveryStream.Arn'
+              - Sid: LisInputStream
+                Effect: Allow
+                Action:
+                  - firehose:ListDeliveryStreams
+                Resource: '*'
+              - Sid: InvokeLambda
+                Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                  - lambda:GetFunctionConfiguration
+                Resource: !Sub
+                  - ${Param1}*
+                  - Param1: !GetAtt ProcessMetricsFunction.Arn
+              - Sid: WriteOutputStram
+                Effect: Allow
+                Action:
+                  - kinesis:PutRecord
+                  - kinesis:PutRecords
+                  - kinesis:DescribeStream
+                Resource:
+                  - !GetAtt 'OutputStream.Arn'
   KinesisAnalyticsApp:
     Type: AWS::KinesisAnalytics::Application
     Properties:
       ApplicationName: !Sub '${AWS::StackName}-WebMetricsApplication'
       ApplicationDescription: Kineis Analytics Web Metrics Solution Accelerator
       ApplicationCode: !Sub |
-        CREATE STREAM "DESTINATION_SQL_STREAM"(
-            MetricType VARCHAR(16),
-            EventTimestamp BIGINT,
-            MetricItem VARCHAR(1024),
-            UnitValueInt BIGINT,
-            UnitValueFloat DOUBLE);
+            CREATE STREAM "DESTINATION_SQL_STREAM"(
+                MetricType VARCHAR(16),
+                EventTimestamp BIGINT,
+                MetricItem VARCHAR(1024),
+                UnitValueInt BIGINT,
+                UnitValueFloat DOUBLE);
 
-        --Active Visitors
-        CREATE OR REPLACE PUMP "VISTOR_COUNTER_PUMP" AS
-        INSERT INTO "DESTINATION_SQL_STREAM" ( MetricType, EventTimestamp, UnitValueInt)
-        SELECT STREAM 'visitor_count', UNIX_TIMESTAMP(weblogs.window_time), COUNT(weblogs.clientid) FROM (
-            SELECT STREAM DISTINCT
-                monotonic (STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ss z',"WASA_001"."datetime") by INTERVAL '60' SECOND)) AS window_time,
-                STEP ("WASA_001".ROWTIME BY INTERVAL '60' SECOND),
-                "WASA_001"."clientid" as clientid
-            FROM "WASA_001") as weblogs
-            GROUP BY
-            window_time;
+            --Active Visitors
+            CREATE OR REPLACE PUMP "VISTOR_COUNTER_PUMP" AS
+            INSERT INTO "DESTINATION_SQL_STREAM" ( MetricType, EventTimestamp, UnitValueInt)
+            SELECT STREAM 'visitor_count', UNIX_TIMESTAMP(weblogs.window_time), COUNT(weblogs.clientid) FROM (
+                SELECT STREAM DISTINCT
+                    monotonic (STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ss z',"WASA_001"."datetime") by INTERVAL '60' SECOND)) AS window_time,
+                    STEP ("WASA_001".ROWTIME BY INTERVAL '60' SECOND),
+                    "WASA_001"."clientid" as clientid
+                FROM "WASA_001") as weblogs
+                GROUP BY
+                window_time;
 
-        --"Top" Page Views
-        CREATE OR REPLACE PUMP "PAGEVIEWS_PUMP" AS
-        INSERT INTO "DESTINATION_SQL_STREAM" ( MetricType, EventTimestamp, MetricItem, UnitValueInt)
-        SELECT 'top_pages', UNIX_TIMESTAMP(eventTimestamp), page, page_count FROM (
-            SELECT stream
-                weblogs."page" as page,
-                count(*) as page_count,
-                STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ss z',weblogs."datetime") by INTERVAL '10' SECOND) as eventTimestamp
-            FROM "WASA_001" weblogs
-            WHERE weblogs."page" is not NULL
-            GROUP BY
-                STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND),
-                STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ss z',weblogs."datetime") by INTERVAL '10' SECOND),
-                weblogs."page"
-            HAVING count(*) > 1
-            ORDER BY STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND), page_count desc
-        );
-
-        -- Events --
-        CREATE STREAM "EVENT_STREAM"(
-            MetricType VARCHAR(16),
-            EventTimestamp BIGINT,
-            MetricItem VARCHAR(1024),
-            UnitValueInt BIGINT);
-        CREATE OR REPLACE PUMP "SHARED_EVENT_PUMP" AS
-        INSERT INTO "EVENT_STREAM" ( MetricType, EventTimestamp, MetricItem, UnitValueInt)
-        SELECT 'event_count', UNIX_TIMESTAMP(eventTimestamp), event, event_count FROM (
-            SELECT STREAM
-                STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ss z',weblogs."datetime") by INTERVAL '10' SECOND) as eventTimestamp,
-                weblogs."event" event,
-                count(*) event_count
-            FROM "WASA_001" weblogs
-            WHERE weblogs."event" is not NULL
-            GROUP BY
-                weblogs."event",
-                STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND),
-                STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ss z',weblogs."datetime") by INTERVAL '10' SECOND)
-        );
-
-        CREATE OR REPLACE PUMP "EVENT_PUMP" AS
-        INSERT INTO "DESTINATION_SQL_STREAM" (MetricType, EventTimestamp, MetricItem, UnitValueInt)
-        SELECT STREAM MetricType, EventTimestamp, MetricItem, UnitValueInt FROM "EVENT_STREAM";
-
-        --Anomaly detection for event distribution
-        CREATE STREAM "ANOMALY_TEMP_STREAM"(
-            EventTimestampString VARCHAR(16),
-            MetricItem VARCHAR(1024),
-            MetricItemInt INTEGER,
-            UnitValueInt BIGINT,
-            AnomalyScore DOUBLE);
-        CREATE OR REPLACE PUMP "INTERMEDIATE_ANOMALY_EVENT_PUMP" AS
-        INSERT INTO "ANOMALY_TEMP_STREAM" ( EventTimestampString, MetricItem, MetricItemInt, UnitValueInt, AnomalyScore)
-        SELECT STREAM *
-        FROM TABLE (
-            RANDOM_CUT_FOREST(
-                CURSOR(SELECT STREAM
-                    CAST(EventTimestamp AS VARCHAR(16)),
-                    MetricItem,
-                    case MetricItem
-                    WHEN 'click' THEN 1
-                    WHEN 'pageview' THEN 2
-                    WHEN 'conversion' THEN 3
-                    WHEN 'exception' THEN 4
-                    WHEN 'playvideo' THEN 5
-                    WHEN 'login' THEN 6
-                    WHEN 'logoff' THEN 7
-                    ELSE 0
-                    END,
-                    UnitValueInt FROM "EVENT_STREAM"),
-                    100,
-                    256,
-                    100000,
-                    1)
+            --"Top" Page Views
+            CREATE OR REPLACE PUMP "PAGEVIEWS_PUMP" AS
+            INSERT INTO "DESTINATION_SQL_STREAM" ( MetricType, EventTimestamp, MetricItem, UnitValueInt)
+            SELECT 'top_pages', UNIX_TIMESTAMP(eventTimestamp), page, page_count FROM (
+                SELECT stream
+                    weblogs."page" as page,
+                    count(*) as page_count,
+                    STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ss z',weblogs."datetime") by INTERVAL '10' SECOND) as eventTimestamp
+                FROM "WASA_001" weblogs
+                WHERE weblogs."page" is not NULL
+                GROUP BY
+                    STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND),
+                    STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ss z',weblogs."datetime") by INTERVAL '10' SECOND),
+                    weblogs."page"
+                HAVING count(*) > 1
+                ORDER BY STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND), page_count desc
             );
 
-        CREATE OR REPLACE PUMP "ANOMALY_EVENT_PUMP" AS
-        INSERT INTO "DESTINATION_SQL_STREAM" (MetricType, EventTimestamp, MetricItem, UnitValueFloat)
-        SELECT 'event_anomaly', CAST(EventTimestampString AS BIGINT), MetricItem , AnomalyScore FROM (
-            SELECT STREAM
-                EventTimestampString,
-                MetricItem,
-                UnitValueInt,
-                AnomalyScore
-            FROM "ANOMALY_TEMP_STREAM"
-        );
+            -- Events --
+            CREATE STREAM "EVENT_STREAM"(
+                MetricType VARCHAR(16),
+                EventTimestamp BIGINT,
+                MetricItem VARCHAR(1024),
+                UnitValueInt BIGINT);
+            CREATE OR REPLACE PUMP "SHARED_EVENT_PUMP" AS
+            INSERT INTO "EVENT_STREAM" ( MetricType, EventTimestamp, MetricItem, UnitValueInt)
+            SELECT 'event_count', UNIX_TIMESTAMP(eventTimestamp), event, event_count FROM (
+                SELECT STREAM
+                    STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ss z',weblogs."datetime") by INTERVAL '10' SECOND) as eventTimestamp,
+                    weblogs."event" event,
+                    count(*) event_count
+                FROM "WASA_001" weblogs
+                WHERE weblogs."event" is not NULL
+                GROUP BY
+                    weblogs."event",
+                    STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND),
+                    STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ss z',weblogs."datetime") by INTERVAL '10' SECOND)
+            );
 
-        --agents
-        CREATE OR REPLACE PUMP "AGENT_PUMP" AS
-        INSERT INTO "DESTINATION_SQL_STREAM" ( MetricType, EventTimestamp, MetricItem, UnitValueInt)
-        SELECT 'agent_count', UNIX_TIMESTAMP(eventTimestamp), agent, agent_count FROM (
-            SELECT STREAM
-                weblogs."agent" as agent,
-                count(*) as agent_count,
-                STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND) as eventTimestamp
-            FROM "WASA_001" weblogs
-            WHERE weblogs."agent" NOT like 'ELB-HealthChecker%'
-            GROUP BY
-                weblogs."agent",
-                STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND)
-        );
+            CREATE OR REPLACE PUMP "EVENT_PUMP" AS
+            INSERT INTO "DESTINATION_SQL_STREAM" (MetricType, EventTimestamp, MetricItem, UnitValueInt)
+            SELECT STREAM MetricType, EventTimestamp, MetricItem, UnitValueInt FROM "EVENT_STREAM";
 
-        --referrer (-r) list
-        CREATE OR REPLACE PUMP "REFERRER_PUMP" AS
-        INSERT INTO "DESTINATION_SQL_STREAM" ( MetricType, EventTimestamp, MetricItem, UnitValueInt)
-        SELECT 'referral_count', UNIX_TIMESTAMP(eventTimestamp), referrer, referrer_count FROM (
-            SELECT stream
-                weblogs."referrer" as referrer,
-                count(*) as referrer_count,
-                STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ss z',weblogs."datetime") by INTERVAL '10' SECOND) as eventTimestamp
-            FROM "WASA_001" weblogs
-            GROUP BY
-                STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND),
-                STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ss z',weblogs."datetime") by INTERVAL '10' SECOND),
-                weblogs."referrer"
-            ORDER BY STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND), referrer_count desc
-        );
+            --Anomaly detection for event distribution
+            CREATE STREAM "ANOMALY_TEMP_STREAM"(
+                EventTimestampString VARCHAR(16),
+                MetricItem VARCHAR(1024),
+                MetricItemInt INTEGER,
+                UnitValueInt BIGINT,
+                AnomalyScore DOUBLE);
+            CREATE OR REPLACE PUMP "INTERMEDIATE_ANOMALY_EVENT_PUMP" AS
+            INSERT INTO "ANOMALY_TEMP_STREAM" ( EventTimestampString, MetricItem, MetricItemInt, UnitValueInt, AnomalyScore)
+            SELECT STREAM *
+            FROM TABLE (
+                RANDOM_CUT_FOREST(
+                    CURSOR(SELECT STREAM
+                        CAST(EventTimestamp AS VARCHAR(16)),
+                        MetricItem,
+                        case MetricItem
+                        WHEN 'click' THEN 1
+                        WHEN 'pageview' THEN 2
+                        WHEN 'conversion' THEN 3
+                        WHEN 'exception' THEN 4
+                        WHEN 'playvideo' THEN 5
+                        WHEN 'login' THEN 6
+                        WHEN 'logoff' THEN 7
+                        ELSE 0
+                        END,
+                        UnitValueInt FROM "EVENT_STREAM"),
+                        100,
+                        256,
+                        100000,
+                        1)
+                );
 
-        --Hourly Events
-        CREATE OR REPLACE PUMP "HOURLY_EVENT_PUMP" AS
-        INSERT INTO "DESTINATION_SQL_STREAM" ( MetricType, EventTimestamp, MetricItem, UnitValueInt)
-        SELECT 'hourly_events', EventTimestamp, MetricItem, hourly_total FROM (
-            SELECT STREAM
-                SUM(UnitValueInt) OVER hourly_window as hourly_total,
-                MetricItem,
-                EventTimestamp
-            FROM "EVENT_STREAM"
-            WINDOW hourly_window AS (
-                PARTITION BY MetricItem
-                    RANGE INTERVAL '1' HOUR PRECEDING
-            )
-        );
+            CREATE OR REPLACE PUMP "ANOMALY_EVENT_PUMP" AS
+            INSERT INTO "DESTINATION_SQL_STREAM" (MetricType, EventTimestamp, MetricItem, UnitValueFloat)
+            SELECT 'event_anomaly', CAST(EventTimestampString AS BIGINT), MetricItem , AnomalyScore FROM (
+                SELECT STREAM
+                    EventTimestampString,
+                    MetricItem,
+                    UnitValueInt,
+                    AnomalyScore
+                FROM "ANOMALY_TEMP_STREAM"
+            );
+
+            --agents
+            CREATE OR REPLACE PUMP "AGENT_PUMP" AS
+            INSERT INTO "DESTINATION_SQL_STREAM" ( MetricType, EventTimestamp, MetricItem, UnitValueInt)
+            SELECT 'agent_count', UNIX_TIMESTAMP(eventTimestamp), agent, agent_count FROM (
+                SELECT STREAM
+                    weblogs."agent" as agent,
+                    count(*) as agent_count,
+                    STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND) as eventTimestamp
+                FROM "WASA_001" weblogs
+                WHERE weblogs."agent" NOT like 'ELB-HealthChecker%'
+                GROUP BY
+                    weblogs."agent",
+                    STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND)
+            );
+
+            --referrer (-r) list
+            CREATE OR REPLACE PUMP "REFERRER_PUMP" AS
+            INSERT INTO "DESTINATION_SQL_STREAM" ( MetricType, EventTimestamp, MetricItem, UnitValueInt)
+            SELECT 'referral_count', UNIX_TIMESTAMP(eventTimestamp), referrer, referrer_count FROM (
+                SELECT stream
+                    weblogs."referrer" as referrer,
+                    count(*) as referrer_count,
+                    STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ss z',weblogs."datetime") by INTERVAL '10' SECOND) as eventTimestamp
+                FROM "WASA_001" weblogs
+                GROUP BY
+                    STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND),
+                    STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ss z',weblogs."datetime") by INTERVAL '10' SECOND),
+                    weblogs."referrer"
+                ORDER BY STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND), referrer_count desc
+            );
+
+            --Hourly Events
+            CREATE OR REPLACE PUMP "HOURLY_EVENT_PUMP" AS
+            INSERT INTO "DESTINATION_SQL_STREAM" ( MetricType, EventTimestamp, MetricItem, UnitValueInt)
+            SELECT 'hourly_events', EventTimestamp, MetricItem, hourly_total FROM (
+                SELECT STREAM
+                    SUM(UnitValueInt) OVER hourly_window as hourly_total,
+                    MetricItem,
+                    EventTimestamp
+                FROM "EVENT_STREAM"
+                WINDOW hourly_window AS (
+                    PARTITION BY MetricItem
+                        RANGE INTERVAL '1' HOUR PRECEDING
+                )
+            );
       Inputs:
-      - NamePrefix: WASA
-        InputSchema:
-          RecordColumns:
-          - Name: host
-            SqlType: VARCHAR(16)
-            Mapping: $.host
-          - Name: datetime
-            SqlType: VARCHAR(32)
-            Mapping: $.datetime
-          - Name: request
-            SqlType: VARCHAR(256)
-            Mapping: $.request
-          - Name: response
-            SqlType: INTEGER
-            Mapping: $.response
-          - Name: bytes
-            SqlType: INTEGER
-            Mapping: $.bytes
-          - Name: referrer
-            SqlType: VARCHAR(32)
-            Mapping: $.referrer
-          - Name: agent
-            SqlType: VARCHAR(128)
-            Mapping: $.agent
-          - Name: event
-            SqlType: VARCHAR(16)
-            Mapping: $.event
-          - Name: clientid
-            SqlType: VARCHAR(256)
-            Mapping: $.clientid
-          - Name: page
-            SqlType: VARCHAR(256)
-            Mapping: $.page
-          - Name: custom_metric_name
-            SqlType: VARCHAR(256)
-            Mapping: $.custom_metric_name
-          - Name: custom_metric_int_value
-            SqlType: INTEGER
-            Mapping: $.custom_metric_int_value
-          - Name: custom_metric_float_value
-            SqlType: DOUBLE
-            Mapping: $.custom_metric_float_value
-          - Name: custom_metric_string_value
-            SqlType: VARCHAR(256)
-            Mapping: $.custom_metric_string_value
-          RecordFormat:
-            RecordFormatType: JSON
-            MappingParameters:
-              JSONMappingParameters:
-                RecordRowPath: $
-        KinesisFirehoseInput:
-          ResourceARN: !Sub 'arn:aws:firehose:${AWS::Region}:${AWS::AccountId}:deliverystream/${DeliveryStream}'
-          RoleARN: !GetAtt 'KinesisAnalyticsRole.Arn'
+        - NamePrefix: WASA
+          InputSchema:
+            RecordColumns:
+              - Name: host
+                SqlType: VARCHAR(16)
+                Mapping: $.host
+              - Name: datetime
+                SqlType: VARCHAR(32)
+                Mapping: $.datetime
+              - Name: request
+                SqlType: VARCHAR(256)
+                Mapping: $.request
+              - Name: response
+                SqlType: INTEGER
+                Mapping: $.response
+              - Name: bytes
+                SqlType: INTEGER
+                Mapping: $.bytes
+              - Name: referrer
+                SqlType: VARCHAR(32)
+                Mapping: $.referrer
+              - Name: agent
+                SqlType: VARCHAR(128)
+                Mapping: $.agent
+              - Name: event
+                SqlType: VARCHAR(16)
+                Mapping: $.event
+              - Name: clientid
+                SqlType: VARCHAR(256)
+                Mapping: $.clientid
+              - Name: page
+                SqlType: VARCHAR(256)
+                Mapping: $.page
+              - Name: custom_metric_name
+                SqlType: VARCHAR(256)
+                Mapping: $.custom_metric_name
+              - Name: custom_metric_int_value
+                SqlType: INTEGER
+                Mapping: $.custom_metric_int_value
+              - Name: custom_metric_float_value
+                SqlType: DOUBLE
+                Mapping: $.custom_metric_float_value
+              - Name: custom_metric_string_value
+                SqlType: VARCHAR(256)
+                Mapping: $.custom_metric_string_value
+            RecordFormat:
+              RecordFormatType: JSON
+              MappingParameters:
+                JSONMappingParameters:
+                  RecordRowPath: $
+          KinesisFirehoseInput:
+            ResourceARN: !Sub 'arn:aws:firehose:${AWS::Region}:${AWS::AccountId}:deliverystream/${DeliveryStream}'
+            RoleARN: !GetAtt 'KinesisAnalyticsRole.Arn'
 
   KinesisAnalyticsAppAnomalyOutput:
     Type: AWS::KinesisAnalytics::ApplicationOutput
@@ -906,7 +914,7 @@ Resources:
           RoleARN: !GetAtt KinesisAnalyticsRole.Arn
         Name: DESTINATION_SQL_STREAM
 
-  # Kinesis Stream
+# Kinesis Stream
   OutputStream:
     Type: AWS::Kinesis::Stream
     Properties:
@@ -920,11 +928,11 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
-      - AttributeName: MetricType
-        AttributeType: S
+        - AttributeName: MetricType
+          AttributeType: S
       KeySchema:
-      - AttributeName: MetricType
-        KeyType: HASH
+        - AttributeName: MetricType
+          KeyType: HASH
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
@@ -934,15 +942,15 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
-      - AttributeName: MetricType
-        AttributeType: S
-      - AttributeName: EventTimestamp
-        AttributeType: N
+        - AttributeName: MetricType
+          AttributeType: S
+        - AttributeName: EventTimestamp
+          AttributeType: N
       KeySchema:
-      - AttributeName: MetricType
-        KeyType: HASH
-      - AttributeName: EventTimestamp
-        KeyType: RANGE
+        - AttributeName: MetricType
+          KeyType: HASH
+        - AttributeName: EventTimestamp
+          KeyType: RANGE
       ProvisionedThroughput:
         ReadCapacityUnits: !FindInMap [DDB, Scaling, ReadCapacityMin]
         WriteCapacityUnits: !FindInMap [DDB, Scaling, ReadCapacityMin]
@@ -959,32 +967,32 @@ Resources:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - application-autoscaling.amazonaws.com
-          Action:
-          - sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service:
+                - application-autoscaling.amazonaws.com
+            Action:
+              - sts:AssumeRole
       Path: "/"
       Policies:
-      - PolicyName: "root"
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-          - Effect: "Allow"
-            Action:
-            - "cloudwatch:PutMetricAlarm"
-            - "cloudwatch:DescribeAlarms"
-            - "cloudwatch:GetMetricStatistics"
-            - "cloudwatch:SetAlarmState"
-            - "cloudwatch:DeleteAlarms"
-            Resource: "*"
-          - Effect: "Allow"
-            Action:
-            - "dynamodb:DescribeTable"
-            - "dynamodb:UpdateTable"
-            Resource:
-            - !GetAtt MetricDetailsTable.Arn
+        - PolicyName: "root"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "cloudwatch:PutMetricAlarm"
+                  - "cloudwatch:DescribeAlarms"
+                  - "cloudwatch:GetMetricStatistics"
+                  - "cloudwatch:SetAlarmState"
+                  - "cloudwatch:DeleteAlarms"
+                Resource: "*"
+              - Effect: "Allow"
+                Action:
+                  - "dynamodb:DescribeTable"
+                  - "dynamodb:UpdateTable"
+                Resource:
+                  - !GetAtt MetricDetailsTable.Arn
 
   WriteCapacityScalableTarget:
     Type: AWS::ApplicationAutoScaling::ScalableTarget
@@ -1041,73 +1049,73 @@ Resources:
       CustomResourceAction: SeedDynamoTable
       UUID: !GetAtt GenerateUUID.UUID
 
-  # Lambda Processing Function
+# Lambda Processing Function
   ProcessMetricsLambdaRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - lambda.amazonaws.com
-          Action:
-          - sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
       Policies:
-      - PolicyName: ProcessMetricsLambdaPolicy
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Sid: DynamoDBAccess
-            Effect: Allow
-            Action:
-            - dynamodb:BatchGetItem
-            - dynamodb:BatchWriteItem
-            - dynamodb:GetItem
-            - dynamodb:GetRecords
-            - dynamodb:PutItem
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:UpdateItem
-            Resource:
-            - !GetAtt MetricTable.Arn
-            - !GetAtt MetricDetailsTable.Arn
-          - Sid: CWLogs
-            Effect: Allow
-            Action:
-            - logs:CreateLogGroup
-            - logs:CreateLogStream
-            - logs:PutDestination
-            - logs:PutLogEvents
-            Resource:
-            - !Join ["", ["arn:aws:logs:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":log-group:/aws/lambda/*"]]
-          - Sid: AccessOutputStream
-            Effect: Allow
-            Action:
-            - kinesis:GetRecords
-            - kinesis:GetShardIterator
-            - kinesis:DescribeStream
-            - kinesis:ListStreams
-            Resource:
-            - !GetAtt OutputStream.Arn
+        - PolicyName: ProcessMetricsLambdaPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: DynamoDBAccess
+                Effect: Allow
+                Action:
+                  - dynamodb:BatchGetItem
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:GetItem
+                  - dynamodb:GetRecords
+                  - dynamodb:PutItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:UpdateItem
+                Resource:
+                  - !GetAtt MetricTable.Arn
+                  - !GetAtt MetricDetailsTable.Arn
+              - Sid: CWLogs
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutDestination
+                  - logs:PutLogEvents
+                Resource:
+                  - !Join ["", ["arn:aws:logs:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":log-group:/aws/lambda/*"]]
+              - Sid: AccessOutputStream
+                Effect: Allow
+                Action:
+                - kinesis:GetRecords
+                - kinesis:GetShardIterator
+                - kinesis:DescribeStream
+                - kinesis:ListStreams
+                Resource:
+                - !GetAtt OutputStream.Arn
 
   ProcessMetricsFunction:
     Type: AWS::Lambda::Function
     Properties:
       Code:
         S3Bucket: !Sub
-        - ${Param1}-${AWS::Region}
-        - Param1: !FindInMap
-          - SourceCode
-          - General
-          - S3Bucket
+          - ${Param1}-${AWS::Region}
+          - Param1: !FindInMap
+              - SourceCode
+              - General
+              - S3Bucket
         S3Key: !Sub
-        - ${Param1}/wasa.zip
-        - Param1: !FindInMap
-          - SourceCode
-          - General
-          - KeyPrefix
+          - ${Param1}/wasa.zip
+          - Param1: !FindInMap
+              - SourceCode
+              - General
+              - KeyPrefix
       Environment:
         Variables:
           METRIC_TABLE: !Ref MetricTable
@@ -1128,42 +1136,42 @@ Resources:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - lambda.amazonaws.com
-          Action:
-          - sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
       Policies:
-      - PolicyName: PublishMetricsLambdaPolicy
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Sid: DynamoDBAccess
-            Effect: Allow
-            Action:
-            - dynamodb:DescribeStream
-            - dynamodb:GetRecords
-            - dynamodb:GetShardIterator
-            - dynamodb:ListStreams
-            - dynamodb:Scan
-            Resource:
-            - !Sub "${MetricDetailsTable.Arn}/stream/*"
-            - !GetAtt MetricTable.Arn
-          - Sid: CWLogs
-            Effect: Allow
-            Action:
-            - logs:CreateLogGroup
-            - logs:CreateLogStream
-            - logs:PutLogEvents
-            Resource:
-            - !Join ["", ["arn:aws:logs:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":log-group:/aws/lambda/*"]]
-          - Sid: CWMetrics
-            Effect: Allow
-            Action:
-            - cloudwatch:PutMetricData
-            Resource:
-            - '*'
+        - PolicyName: PublishMetricsLambdaPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: DynamoDBAccess
+                Effect: Allow
+                Action:
+                  - dynamodb:DescribeStream
+                  - dynamodb:GetRecords
+                  - dynamodb:GetShardIterator
+                  - dynamodb:ListStreams
+                  - dynamodb:Scan
+                Resource:
+                  - !Sub "${MetricDetailsTable.Arn}/stream/*"
+                  - !GetAtt MetricTable.Arn
+              - Sid: CWLogs
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - !Join ["", ["arn:aws:logs:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":log-group:/aws/lambda/*"]]
+              - Sid: CWMetrics
+                Effect: Allow
+                Action:
+                  - cloudwatch:PutMetricData
+                Resource:
+                  - '*'
 
   PublishMetricsFunction:
     Type: AWS::Lambda::Function
@@ -1238,7 +1246,7 @@ Resources:
                 print(response)
               except: # skip when records are removed via TTL
                 print('Skip removed records ({})'.format(sys.exc_info()[0]))
-              #raise
+                #raise
             return 'Successfully processed records.'
       Environment:
         Variables:
@@ -1250,95 +1258,95 @@ Resources:
       Runtime: python2.7
       Timeout: 60
 
-  # Helper Functions
+# Helper Functions
   CustomResourceHelperRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - lambda.amazonaws.com
-          Action:
-          - sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
       Path: /
       Policies:
-      - PolicyName: CustomResourceHelperPolicy
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-            - s3:GetObject
-            Resource:
-            - !Sub
-              - arn:aws:s3:::${Param1}-${AWS::Region}/${Param2}/*
-              - Param1: !FindInMap
-                - SourceCode
-                - General
-                - S3Bucket
-                Param2: !FindInMap
-                - SourceCode
-                - General
-                - KeyPrefix
-          - Sid: CWLogs
-            Effect: Allow
-            Action:
-            - logs:CreateLogGroup
-            - logs:CreateLogStream
-            - logs:PutDestination
-            - logs:PutLogEvents
-            Resource:
-            - !Join ["", ["arn:aws:logs:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":log-group:/aws/lambda/*"]]
-          - Effect: Allow
-            Action:
-            - kinesisanalytics:ListApplications
-            Resource:
-            - '*'
-          - Effect: Allow
-            Action:
-            - ec2:describeImages
-            Resource:
-            - '*'
-          - Sid: DynamoDBAccess
-            Effect: Allow
-            Action:
-            - dynamodb:PutItem
-            Resource:
-            - !GetAtt MetricTable.Arn
+        - PolicyName: CustomResourceHelperPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                Resource:
+                  - !Sub
+                    - arn:aws:s3:::${Param1}-${AWS::Region}/${Param2}/*
+                    - Param1: !FindInMap
+                        - SourceCode
+                        - General
+                        - S3Bucket
+                      Param2: !FindInMap
+                        - SourceCode
+                        - General
+                        - KeyPrefix
+              - Sid: CWLogs
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutDestination
+                  - logs:PutLogEvents
+                Resource:
+                  - !Join ["", ["arn:aws:logs:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":log-group:/aws/lambda/*"]]
+              - Effect: Allow
+                Action:
+                  - kinesisanalytics:ListApplications
+                Resource:
+                  - '*'
+              - Effect: Allow
+                Action:
+                  - ec2:describeImages
+                Resource:
+                  - '*'
+              - Sid: DynamoDBAccess
+                Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                Resource:
+                  - !GetAtt MetricTable.Arn
 
   CustomResourceHelper:
     Type: AWS::Lambda::Function
     Properties:
       Code:
         S3Bucket: !Sub
-        - ${Param1}-${AWS::Region}
-        - Param1: !FindInMap
-          - SourceCode
-          - General
-          - S3Bucket
+          - ${Param1}-${AWS::Region}
+          - Param1: !FindInMap
+              - SourceCode
+              - General
+              - S3Bucket
         S3Key: !Sub
-        - ${Param1}/custom-resource-helper.zip
-        - Param1: !FindInMap
-          - SourceCode
-          - General
-          - KeyPrefix
+          - ${Param1}/custom-resource-helper.zip
+          - Param1: !FindInMap
+              - SourceCode
+              - General
+              - KeyPrefix
       Environment:
         Variables:
           SOLUTION_ID: !FindInMap
-          - Solution
-          - Data
-          - ID
+            - Solution
+            - Data
+            - ID
           SOLUTION_VERSION: !FindInMap
-          - Solution
-          - Data
-          - Version
+            - Solution
+            - Data
+            - Version
           SEND_ANONYMOUS_DATA: !FindInMap
-          - Solution
-          - Data
-          - SendAnonymousUsageData
+            - Solution
+            - Data
+            - SendAnonymousUsageData
       Description: Solution Accelerator for Web Analytics - Function to deploy web
         pages.
       Handler: index.handler

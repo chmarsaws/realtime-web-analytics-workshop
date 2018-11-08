@@ -341,10 +341,10 @@ Resources:
                       {
                         "optionName": "LOGTOJSON",
                         "logFormat":"COMBINEDAPACHELOG",
-                        "matchPattern": "^([\\d.]+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(.+?)\" (\\d{3}) ([0-9]+) \"(.+?)\" \"(.+?)\" \"(.+?)\" \"(.+?)\" \"(.+?)\"$",
-                        "customFieldNames": ["host", "ident", "authuser", "datetime", "request", "response", "bytes", "referrer", "agent", "event", "clientid", "page"]
+                        "matchPattern": "^([\\d.]+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(.+?)\" (\\d{3}) ([0-9]+) \"(.+?)\" \"(.+?)\" \"(.+?)\" \"(.+?)\" \"(.+?)\" \"(.+?)\" \"(.+?)\" \"(.+?)\" \"(.+?)\"$",
+                        "customFieldNames": ["host", "ident", "authuser", "datetime", "request", "response", "bytes", "referrer", "agent", "event", "clientid", "page", "custom_metric_name", "custom_metric_int_value", "custom_metric_float_value", "custom_metric_string_value"]
                       }
-                      ]   
+                      ]
                     }
                   ]
                 }
@@ -397,7 +397,7 @@ Resources:
               command: sed -i 's/LogFormat "%h %l %u %t \\"%r\\" %>s %b \\"%{Referer}i\\"
                 \\"%{User-Agent}i\\"" combined/LogFormat "%h %l %u %t \\"%r\\" %>s
                 %b \\"%{Referer}i\\" \\"%{User-Agent}i\\" \\"%{event}i\\" \\"%{clientid}i\\"
-                \\"%{page}i\\"" combined/' /etc/httpd/conf/httpd.conf
+                \\"%{page}i\\" \\"%{custom_metric_name}i\\" \\"%{custom_metric_int_value}i\\" \\"%{custom_metric_float_value}i\\" \\"%{custom_metric_string_value}i\\"" combined/' /etc/httpd/conf/httpd.conf
           services:
             sysvinit:
               httpd:
@@ -503,7 +503,6 @@ Resources:
         - IpProtocol: '-1'
           CidrIp: 0.0.0.0/0
 
-
   WebServerInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -553,6 +552,14 @@ Resources:
                   - ssm:UpdateAssociationStatus
                   - ssm:UpdateInstanceAssociationStatus
                   - ssm:UpdateInstanceInformation
+                  - ssmmessages:CreateControlChannel
+                  - ssmmessages:CreateDataChannel
+                  - ssmmessages:OpenControlChannel
+                  - ssmmessages:OpenDataChannel
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - s3:GetEncryptionConfiguration
                 Resource: '*'
               - Effect: Allow
                 Action:

@@ -489,6 +489,14 @@ Resources:
                   - ssm:UpdateAssociationStatus
                   - ssm:UpdateInstanceAssociationStatus
                   - ssm:UpdateInstanceInformation
+                  - ssmmessages:CreateControlChannel
+                  - ssmmessages:CreateDataChannel
+                  - ssmmessages:OpenControlChannel
+                  - ssmmessages:OpenDataChannel
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - s3:GetEncryptionConfiguration
                 Resource: '*'
               - Effect: Allow
                 Action:
