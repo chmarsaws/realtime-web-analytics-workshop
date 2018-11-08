@@ -173,7 +173,7 @@ The MetricDetails table contains all the metric records that are emitted from th
 </details>  
 
 Note: The template **2-kinesis-analytics-module-completed.yaml** contains the changes that were manually completed in this module.  If you did the manual steps in Module #2, **do not** run update the stack with the **2-kinesis-analytics-module-completed.yaml**. However, if you did not manually connect the Lambda to the Kinesis Data Stream, you can apply it as an update to your stack.  In this case you will still need to manually start the Kinesis Analytics application.    
-The custom resource helper also has a function to start the application manually but it has not been included in this workshop. 
+The custom resource helper also has a function to start the application automatically but it has not been included in this workshop. 
 
 ### Start next module
 

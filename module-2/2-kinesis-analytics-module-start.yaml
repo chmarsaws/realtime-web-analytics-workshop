@@ -1117,7 +1117,7 @@ Resources:
 
       Description: Solution Accelerator for Web Analytics - Function to process metrics.
       Handler: index.handler
-      MemorySize: 256
+      MemorySize: 1600
       Role: !GetAtt ProcessMetricsLambdaRole.Arn
       Runtime: nodejs6.10
       Timeout: 300
