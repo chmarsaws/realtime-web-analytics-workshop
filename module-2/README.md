@@ -2,11 +2,11 @@
 
 ## Introduction
 
-In this module, you will use CloudFormation to add a Kinesis Analytics application, Lambda function and two DynamoDB tables.  You will then start the Kinesis Analytics application, update the SQL, add a destination, and connect the destination to the Lambda function.
+In this module, you will use CloudFormation to add a Kinesis Analytics application, a Kinesis Data stream, a Lambda function, and two DynamoDB tables.  You will first start the Kinesis Analytics application, update the SQL, and set the data stream as the Lambda function event trigger.
 
 ## Architecture Overview of Module #2 Components
 
-![module-2-diagram](../images/module-2.png)
+![module-2-diagram](../images/2-overview-with-stream.png)
 
 In this scenario, you will leverage Amazon Kinesis Data Analytics, AWS Lambda, and Amazon DynamoDB.
 
@@ -128,37 +128,52 @@ CREATE STREAM "DESTINATION_SQL_STREAM"(
 8.  Click **Save and run SQL**
 </details>
 
+## 3. Inspect the real-time analytics for the application  
+
+Now that your Kinesis application in running, let's review the data that is flowing through the application.  
+1.  Click on the **Source data** tab and review the source data.  The source stream has been named **WASA_001** through the CloudFormation temaplate.  This stream receives the raw records set by the Kinesis Agents on each of the web servers.  In the table structure you should see a sampling of the data coming in from the source.  If you see a message about no rows being available, verify that the **test_beacon.py** script is running.  If it is running, try refreshing the page.  
+
+![Select Source](../images/2-source-data.png)
+
+2. Next click on the **Real-time analytics** tab.  Here you will see the streams created in the SQL window populated by the in-application pumps.  Keep in mind that these "streams" are referred to as in-application streams and are different than Kinesis Data Streams.  Eventually the console will refresh with a sampling of data for these based on what is selected under In-application streams.  Be aware that the console does a sampling of data that flows through the streams and does not display all the records as they flow through.  Also notice that the last stream is **error_stream** which is created automatically for every application.  If there are errors encountered based on the interaction between the data and the SQL they would be output to the error_stream.
+
+3. Finally, click on the **Destination** tab.  Here you will see that the CloudFormation template connected the DESTINATION_SQL_STREAM to a Kinesis Data Stream.
+
+## 4. Configure the Kinesis Data Stream as a trigger for Lambda
+
 <details>
-<summary><strong>Configure the Application Output (expand for details) </strong></summary><p>
+<summary><strong>Configure the Process Metrics Fuction in Lambda (expand for details) </strong></summary><p>
 
-1.  After several seconds the analytics application will start processing the incoming data.  Select the DESTINATION_SQL_STREAM on the Real-time analytics tab and notice data records flowing through.  
-2. Click the Close link below the data table to return to the Kinesis application pipeline components.  
-3. Click the **Connect to a destination** button. 
-4. Select AWS Lambda function for the Destination and select the metric processing function created by the module 2 CloudFormation template.  It will be named <strong>stack-name</strong>-ProcessMetricsFunction.  Make sure you are **not** selecting the custom helper function.  
+1. Navigate to Lambda in the AWS console and select the **stack name**-ProcessMetricsFunction-**random** function.  
+2. In the **Designer** section select Kinesis as a trigger.  
 
-![Select Lambda](../images/2-select-lambda.png)
+![Select Kinesis](../images/2-add-kinesis-stream.png)
 
-5. Select Choose an existing in-application stream, select the DESTINATION_SQL_STREAM that you just created, and select JSON for the Output format.
+5. Scroll down to the **Configure triggers** section.  
 
-![Select output](../images/2-select-stream.png)
+6. Select the **stack name**-OutputStream stream as the stream to listen on then click **Add** leaving the defaults of 100 for Batch size and Latest for starting position.
 
-6. Re-Select the role named <strong>stack-name</strong>-KinesisAnalyticsRole to enable the Save and continue button the click the button.
+![Configure triggers](../images/2-add-kinesis-stream2.png)
 
-![Select role](../images/2-select-role.png)
+7. To save your changes click the **Save** button for the Lambda configuration.
+
+![Save Lambda Changes](../images/2-add-kinesis-stream-save.png)
 
 </details>  
+
+## 5. Validate data processing
 
 <details>
 <summary><strong>Review Completed Steps (expand for details) </strong></summary><p>  
 
-
-You should now have data flowing through the pipeline into the **stack-name**-MetricDetails DynamoDB table.  
-
-![Review Steps Completed](../images/2-complete.png)  
+You should now have data flowing through the pipeline into the **stack-name**-MetricDetails DynamoDB table based on writes completed from the **stack name**-ProcessMetricsFunction-**random** function.
+To validate this, review the items written to the **stack name**-Metrics and **stack name**-MetricDetails DynamoDB tables.
+The MetricDetails table contains all the metric records that are emitted from the Kinesis Analytics application.  The Metrics table contains the metadata about each metric as well as the time of most recent record in the MetricDetails table.  You can scan the small Metrics table and use that information to make an efficient query on the MetricDetails table.   
 
 </details>  
 
-Note: The template **2-kinesis-analytics-module-completed.yaml** contains the changes that were manually completed in this module.  If you update the stack with this template, the Kinesis Data Application will not be started.  After updating the template go to Kinesis and start the WebMetricsApplication manually. The custom resource helper also has a function to start the application manually but it has not been included in this workshop. 
+Note: The template **2-kinesis-analytics-module-completed.yaml** contains the changes that were manually completed in this module.  If you did the manual steps in Module #2, **do not** run update the stack with the **2-kinesis-analytics-module-completed.yaml**. However, if you did not manually connect the Lambda to the Kinesis Data Stream, you can apply it as an update to your stack.  In this case you will still need to manually start the Kinesis Analytics application.    
+The custom resource helper also has a function to start the application automatically but it has not been included in this workshop. 
 
 ### Start next module
 

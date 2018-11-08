@@ -64,7 +64,8 @@ The DynamoDB table named **stack-name**-Metrics initially contains seven items r
 
 ![Append Item](../images/4-insert-item.png)
 
-7.  Use the same method and append **IsSet** Binary : false, **IsWholeNumber** Binary : true, **LatestEventTimestamp** Number : 0  
+7.  Use the same method and append **IsSet** Boolean : false, **IsWholeNumber** Boolean : true, **LatestEventTimestamp** Number : 0 
+Note: Ensure you select the type **Boolean** and not Binary. 
 
 ![Append Item Fields](../images/4-insert-item-fields.png)
 
@@ -108,7 +109,7 @@ s = requests.Session()
 while (i < int(args.calls)):
     time.sleep(float(args.delay))
     loadTime = generateRandomLoadTime()
-    headers = {'custom_metric_name' : 'page_load_time', 'custom_metric_int_value' : loadTime }
+    headers = {'custom_metric_name' : 'page_load_time', 'custom_metric_int_value' : str(loadTime) }
     r = s.post(args.target + '?call=' + str(i),headers=headers)
     if(r.status_code==200):
         sys.stdout.write( str(i) + "-")
@@ -139,6 +140,8 @@ Then execute the script replacing the **BEACONURL** with the ELB for your pipeli
 <details>
 <summary><strong>SQL Statement (expand for code)</strong></summary><p>    
 
+Leave the existing SQL in the editor and add the following to the end of the existing SQL statements.
+
 ```SQL
 CREATE OR REPLACE PUMP "PAGELOAD_PUMP" AS
 INSERT INTO "DESTINATION_SQL_STREAM" (MetricType, EventTimestamp,MetricItem, UnitValueInt)
@@ -150,12 +153,12 @@ SELECT
     FROM (
         SELECT STREAM 'All Pages' as MetricItem,
         AVG(weblogs."custom_metric_int_value") as average_ms,
-        STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ssz',weblogs."datetime") by INTERVAL '60' SECOND) as eventTimestamp
+        STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ssz',weblogs."datetime") by INTERVAL '10' SECOND) as eventTimestamp
         FROM "WASA_001" weblogs
         WHERE weblogs."custom_metric_name" = 'page_load_time'
         GROUP BY
-        STEP (weblogs.ROWTIME BY INTERVAL '60' SECOND),
-        STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ssz',weblogs."datetime") by INTERVAL '60' SECOND)
+        STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND),
+        STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ssz',weblogs."datetime") by INTERVAL '10' SECOND)
     ); 
 ```
 Notes:
@@ -167,9 +170,11 @@ Notes:
 </details>
 
 <details>
-<summary><strong>Create a new CloudWatch graph to show average page load (expand for details)</strong></summary><p>  
+<summary><strong>Create a new CloudWatch graph to show average page load (expand for details)</strong></summary><p>
+  
+Navigate to CloudWatch Metrics and select the new Metric **AvgPgLd** and create a graph.
 
-    Luke, can your Lambda handle custom metrics in a generic way?  
+![Custom Metric](../images/4-custom-graph.png) 
 
 </details>
 

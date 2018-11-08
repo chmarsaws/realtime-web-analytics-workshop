@@ -1,0 +1,2 @@
+aws s3 cp wasa.zip s3://realtime-analytics-workshop-us-west-2/latest/wasa.zip --acl public-read --profile Chris
+aws s3 cp wasa.zip s3://realtime-analytics-workshop-us-east-1/latest/wasa.zip --acl public-read --profile Chris
