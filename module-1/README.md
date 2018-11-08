@@ -45,7 +45,7 @@ While you wait for the stack to finish updating and reach **CREATE_COMPLETE** st
 Every AutoScaling Group has a Launch Configuration that is used to configure the EC2 instances when they are launched.  In these code changes, we modified the existing Launch Configuration in the CloudFormation template, configuring the Kinesis agent to install, start automatically on boot, and stream Apache log events to the Kinesis Delivery Stream that we created in the previous section.  We also modified the EC2 instance IAM role to give the EC2 instances permission to send events to the Kinesis Delivery Stream.
 
 <details>
-<summary><strong>AutoScaling Launch Configuration changes (expand for details)</strong></summary><p>
+<summary><strong>Configuring Kinesis (expand for details)</strong></summary><p>
 
 1.  In the LaunchConfiguration resource, in the `Metadata` section, under `AWS::CloudFormation::Init`, `config`, `packages`, and `yum`, we added a line that contains `aws-kinesis-agent: []` 
 
@@ -320,8 +320,6 @@ To confirm that everything is setup properly, we can verify that events are bein
 If you see folders and objects inside the folders that were delivered by the Kinesis Firehose Delivery Stream, everything is working correctly, and you can proceed to the next module.
 
 </p></details>
-
-When you see the stack showing a **CREATE_COMPLETE** status, you are ready to move on to the next module.
 
 ### Start next module
 
