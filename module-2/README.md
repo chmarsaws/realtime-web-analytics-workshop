@@ -168,6 +168,10 @@ Now that your Kinesis application in running, let's review the data that is flow
 
 You should now have data flowing through the pipeline into the **stack-name**-MetricDetails DynamoDB table based on writes completed from the **stack name**-ProcessMetricsFunction-**random** function.
 To validate this, review the items written to the **stack name**-Metrics and **stack name**-MetricDetails DynamoDB tables.
+Navigate to DyanmoDB in the console and select the Items tab.  The **LastEventTimstamp** data should be updated to a non-zero number indicating that the Processing Lambda function is receiving and processing records.  
+
+![Configure triggers](../images/2-dynamo.png)
+
 The MetricDetails table contains all the metric records that are emitted from the Kinesis Analytics application.  The Metrics table contains the metadata about each metric as well as the time of most recent record in the MetricDetails table.  You can scan the small Metrics table and use that information to make an efficient query on the MetricDetails table.   
 
 </details>  
