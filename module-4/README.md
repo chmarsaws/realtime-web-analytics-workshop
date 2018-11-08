@@ -170,8 +170,11 @@ Notes:
 </details>
 
 <details>
-<summary><strong>Create a new CloudWatch graph to show average page load (expand for details)</strong></summary><p>  
+<summary><strong>Create a new CloudWatch graph to show average page load (expand for details)</strong></summary><p>
+  
+Navigate to CloudWatch Metrics and select the new Metric **AvgPgLd** and create a graph.
 
+![Custom Metric](../images/4-custom-graph.png) 
 
 </details>
 
