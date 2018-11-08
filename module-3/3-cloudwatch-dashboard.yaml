@@ -19,7 +19,7 @@ Resources:
                    "properties":{
                       "metrics":[
                          [
-                            "EventCounts",
+                            "EventCount",
                             "click",
                             {
                               "yAxis":"left",
@@ -29,7 +29,7 @@ Resources:
                             }
                          ],
                          [
-                            "EventAnomalies",
+                            "EventAnomaly",
                             "click",
                             {
                               "yAxis":"right",
@@ -65,7 +65,7 @@ Resources:
                    "properties":{
                       "metrics":[
                          [
-                            "EventCounts",
+                            "EventCount",
                             "exception",
                             {
                               "yAxis":"left",
@@ -75,7 +75,7 @@ Resources:
                             }
                          ],
                          [
-                            "EventAnomalies",
+                            "EventAnomaly",
                             "exception",
                             {
                               "yAxis":"right",
@@ -111,7 +111,7 @@ Resources:
                    "properties":{
                       "metrics":[
                          [
-                            "EventCounts",
+                            "EventCount",
                             "conversion",
                             {
                               "yAxis":"left",
@@ -121,7 +121,7 @@ Resources:
                             }
                          ],
                          [
-                            "EventAnomalies",
+                            "EventAnomaly",
                             "conversion",
                             {
                               "yAxis":"right",
@@ -157,7 +157,7 @@ Resources:
                    "properties":{
                       "metrics":[
                          [
-                            "EventCounts",
+                            "EventCount",
                             "pageview",
                             {
                               "yAxis":"left",
@@ -167,7 +167,7 @@ Resources:
                             }
                          ],
                          [
-                            "EventAnomalies",
+                            "EventAnomaly",
                             "pageview",
                             {
                               "yAxis":"right",
@@ -203,7 +203,7 @@ Resources:
                    "properties":{
                       "metrics":[
                          [
-                            "EventCounts",
+                            "EventCount",
                             "login",
                             {
                               "yAxis":"left",
@@ -213,7 +213,7 @@ Resources:
                             }
                          ],
                          [
-                            "EventAnomalies",
+                            "EventAnomaly",
                             "login",
                             {
                               "yAxis":"right",
@@ -249,7 +249,7 @@ Resources:
                    "properties":{
                       "metrics":[
                          [
-                            "EventCounts",
+                            "EventCount",
                             "logoff",
                             {
                               "yAxis":"left",
@@ -259,7 +259,7 @@ Resources:
                             }
                          ],
                          [
-                            "EventAnomalies",
+                            "EventAnomaly",
                             "logoff",
                             {
                               "yAxis":"right",
@@ -295,7 +295,7 @@ Resources:
                    "properties":{
                       "metrics":[
                          [
-                            "EventCounts",
+                            "EventCount",
                             "playvideo",
                             {
                               "yAxis":"left",
@@ -305,7 +305,7 @@ Resources:
                             }
                          ],
                          [
-                            "EventAnomalies",
+                            "EventAnomaly",
                             "playvideo",
                             {
                               "yAxis":"right",
@@ -341,7 +341,7 @@ Resources:
                    "properties":{
                       "metrics":[
                          [
-                            "EventCounts",
+                            "VisitorCount",
                             "visitor_count",
                             {
                               "yAxis":"left",
