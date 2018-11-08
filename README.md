@@ -6,6 +6,13 @@ Knowing what users are doing on your web sites in realtime gives you insights yo
 
 In this workshop we will build a cost optimized platform to capture web beacon traffic, analyze the traffic for interesting metrics, and display it on a customized dashboard.
 
+<details>
+<summary><strong>Overview of completed solution (expand for details) </strong></summary><p>
+
+![Solution Overview](images/endstate-overview.png)
+
+</p></details> 
+
 To get started with this fun and educational workshop, simply clone this repository and start on module 1 below:
 
 ![Clone repository](images/clone-repo.png)
@@ -65,15 +72,13 @@ You will then create an S3 analytics bucket that will store an archive of all th
 
 In this scenario, you will leverage Amazon S3, Amazon EC2 Linux Instances, AutoScaling, Amazon Kinesis Data Firehose, and CloudFormation to automate the initial deployment, as well as changes to the stack.
 
-**Note:**  The AWS services you use to complete this workshop will cost a small 
-
 [Get Started on Module 1](module-1/README.md)
 
 ## Module 2 – Performing Realtime Analytics with Amazon Kinesis Data Analytics
 
 Amazon Kinesis Data Analyitics makes it easy to process streaming data in real time with standard SQL.  In this module you will create a Kinesis analytics application and use SQL on streaming data to generate metrics in real time that provide insights into current activies on your web site.  Those metrics will be normaized and emitted to a Lambda function which delivers the data to a DynamoDB table.  
 
-![Module 2 Architecture](images/module-2.png)
+![Module 2 Architecture](images/2-overview-with-stream.png)
 
 In this scenario, you will leverage Amazon Kinesis Data Analytics, AWS Lambda, and Amazon DynamoDB.
 
