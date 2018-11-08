@@ -1160,14 +1160,14 @@ Resources:
       Runtime: nodejs6.10
       Timeout: 300
 
-ProcessEventSourceMapping:
-  Type: AWS::Lambda::EventSourceMapping
-  Properties:
-    BatchSize: 100
-    Enabled: true
-    EventSourceArn: !GetAtt OutputStream.Arn
-    FunctionName: !GetAtt ProcessMetricsFunction.Arn
-    StartingPosition: 'LATEST'
+  ProcessEventSourceMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 100
+      Enabled: true
+      EventSourceArn: !GetAtt OutputStream.Arn
+      FunctionName: !GetAtt ProcessMetricsFunction.Arn
+      StartingPosition: 'LATEST'
 
 # Helper Functions
   CustomResourceHelperRole:
