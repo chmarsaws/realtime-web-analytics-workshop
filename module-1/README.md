@@ -167,9 +167,9 @@ Note: again, we are using resource-based permissions to implement the security b
 
 </details>
 
-## 3. (Optional) Review the Kinesis Resources that were added to the CloudFormation stack
+## 2a. (Optional) Review the Kinesis Resources that were added to the CloudFormation stack
 
-### Note: There is no need to make any of these edits; you are simply reviewing them to see what changed.
+### Note: There is no need to make any of these edits; you are simply reviewing them to demonstrate how you would enable streaming a log file to Kinesis.
 
 1.  The first thing that was added to the stack was an S3 analytics bucket resource, as well as a Kinesis Firehose Delivery Stream that will deliver events to it.  
 
@@ -255,7 +255,7 @@ Note: By setting `IntervalInSeconds` to `60` and `SizeInMBs` to `1`, we are conf
 
 </p></details>
 
-## 4. Generating Random Web Traffic for Processing
+## 3. Generating Random Web Traffic for Processing
 
 In this section you will execute a python script that posts http header data to your front end web servers.  To make it easy we added an output variable in the stack that contains the command line needed to generate web traffic sent to your ELB.  
 
@@ -271,7 +271,7 @@ In this section you will execute a python script that posts http header data to 
 
 ![Outputs](../images/2-outputs.png)
 
-4.  The python script, `test-beacon.py` is located in the `module-1/` folder in the GitHub repository that you should have checked out.  If you have trouble locating it, you can also find it ([here.](test-beacon.py))
+4.  The python script, `test-beacon.py` is located in the `module-1/` folder in the GitHub repository that you should have checked out.  If you have trouble locating it, you can also find it ([here.](test-beacon.py))  Open a terminal or command window, navigate to the folder that contains the test-beacon.py script and execute the command.  If the post messages are sent successfully to the load balancer, you should see an incrementing count in the terminal window.  You can leave this running for the rest of the workshop.
 
 <details>
 <summary><strong>Example Command (expand for details)</strong></summary>
@@ -290,16 +290,13 @@ Or, assuming you checked out the GitHub repository to your home directory:
 
 *  The first parameter is the address for the load balancer.  Your DNS entry will be different than the example here.
 *  The second parameter is the number of requests to send before ending the script.  In this case the script will simulate 20,000 web requests.
-*  The last parameter is the number of seconds to delay between sending requests.  Using these values the script should generate data for over two hours. 
-4.  Open a terminal or command window, naviagte to the folder that contains the test-beacon.py script and execute the command.  If the post messages are sent successfully to the load balancer, you should see an incrementing count in the terminal window.  You can leave this running for the rest of the workshop.
-
-Note: if you checked out the GitHub repository in your Cloud9 environment, the script should be located in `~/environment/realtime-web-analytics-workshop/module-1/`.
+*  The last parameter is the number of seconds to delay between sending requests.  Using these values the script should generate data for over two hours.
 
 </details>
 
 </details>
 
-## 5. Verify that the Kinesis Firehose Delivery Stream is Delivering Events to S3
+## 4. Verify that the Kinesis Firehose Delivery Stream is Delivering Events to S3
 
 To confirm that everything is setup properly, we can verify that events are being delivered from the web servers to the S3 analytics bucket by the Kinesis Firehose Delivery Stream.
 
