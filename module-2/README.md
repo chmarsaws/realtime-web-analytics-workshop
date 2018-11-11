@@ -6,7 +6,7 @@ In this module, you will use CloudFormation to add a Kinesis Analytics applicati
 
 ## Architecture Overview of Module #2 Components
 
-![module-2-diagram](../images/2-overview-with-stream.png)
+![module-2-diagram](../images/module-2.png)
 
 In this scenario, you will leverage Amazon Kinesis Data Analytics, AWS Lambda, and Amazon DynamoDB.
 
@@ -127,18 +127,17 @@ CREATE STREAM "DESTINATION_SQL_STREAM"(
 <details>
 <summary><strong>Connect the output to the Lambda processing function (expand for details)</strong></summary>
 
-**Leave the existing SQL** in the editor, and add the following SQL code **at the beginning** to add the stream that will be used for the destination.
+9. Click on the **Destination** tab then the **Connect to destination** button to configure destinations
+10. Select Lambda as the output type.
 
-```SQL
-CREATE STREAM "DESTINATION_SQL_STREAM"(
-    MetricType VARCHAR(16),
-    EventTimestamp BIGINT,
-    MetricItem VARCHAR(1024),
-    UnitValueInt BIGINT,
-    UnitValueFloat DOUBLE);
-```
+![Select Source](../images/2-10.png)
+11. Select the **stack name**-ProcessMetricsFunction-**random** function name.
+![Select Source](../images/2-11.png)
+12. Choose the existing in-application stream DESTINATION_SQL_STREAM and JSON output.
+![Select Source](../images/2-12.png)
+13. Select the **stack name**-KinesisAnalyticsRole-**random** role and click the **Save and continue** button.  If the role is already selected and the button is greyed out you may need to select the role again.  
+![Select Source](../images/2-13.png)
 
-8.  Click **Save and run SQL**
 </details>
 
 ## 3. Inspect the real-time analytics for the application  
