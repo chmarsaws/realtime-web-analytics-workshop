@@ -643,7 +643,7 @@ Resources:
   AnalyticsBucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
-  
+
 # Kinesis Analytics Application
   KinesisAnalyticsRole:
     Type: AWS::IAM::Role
@@ -658,38 +658,31 @@ Resources:
             Action:
               - sts:AssumeRole
       Policies:
-        - PolicyName: kinesisaccess
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Sid: ReadInputStream
-                Effect: Allow
-                Action:
-                  - firehose:DescribeDeliveryStream
-                  - firehose:Get*
-                Resource:
-                  - !GetAtt 'DeliveryStream.Arn'
-              - Sid: LisInputStream
-                Effect: Allow
-                Action:
-                  - firehose:ListDeliveryStreams
-                Resource: '*'
-              - Sid: InvokeLambda
-                Effect: Allow
-                Action: 
-                  - lambda:InvokeFunction
-                  - lambda:GetFunctionConfiguration
-                Resource: !Sub
-                  - ${Param1}*
-                  - Param1: !GetAtt ProcessMetricsFunction.Arn
-              - Sid: WriteOutputStram
-                Effect: Allow
-                Action:
-                  - kinesis:PutRecord
-                  - kinesis:PutRecords
-                  - kinesis:DescribeStream
-                Resource:
-                  - !GetAtt 'OutputStream.Arn'
+      - PolicyName: kinesisaccess
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Sid: ReadInputStream
+            Effect: Allow
+            Action:
+            - firehose:DescribeDeliveryStream
+            - firehose:Get*
+            Resource:
+            - !GetAtt 'DeliveryStream.Arn'
+          - Sid: LisInputStream
+            Effect: Allow
+            Action:
+            - firehose:ListDeliveryStreams
+            Resource: '*'
+          - Sid: InvokeLambda
+            Effect: Allow
+            Action:
+            - lambda:InvokeFunction
+            - lambda:GetFunctionConfiguration
+            Resource: !Sub
+            - ${Param1}*
+            - Param1: !GetAtt ProcessMetricsFunction.Arn
+
   KinesisAnalyticsApp:
     Type: AWS::KinesisAnalytics::Application
     Properties:
@@ -715,7 +708,7 @@ Resources:
                 GROUP BY
                 window_time;
 
-            --"Top" Page Views 
+            --"Top" Page Views
             CREATE OR REPLACE PUMP "PAGEVIEWS_PUMP" AS
             INSERT INTO "DESTINATION_SQL_STREAM" ( MetricType, EventTimestamp, MetricItem, UnitValueInt)
             SELECT 'top_pages', UNIX_TIMESTAMP(eventTimestamp), page, page_count FROM (
@@ -908,19 +901,10 @@ Resources:
       Output:
         DestinationSchema:
           RecordFormatType: JSON
-        KinesisStreamsOutput:
-          ResourceARN: !GetAtt OutputStream.Arn
+        LambdaOutput:
+          ResourceARN: !GetAtt ProcessMetricsFunction.Arn
           RoleARN: !GetAtt KinesisAnalyticsRole.Arn
         Name: DESTINATION_SQL_STREAM
-
-# Kinesis Stream
-  OutputStream:
-    Type: AWS::Kinesis::Stream
-    Properties:
-      Name: !Sub '${AWS::StackName}-OutputStream'
-      RetentionPeriodHours: 24
-      ShardCount: 1
-
 
   # Metric Storage
   MetricTable:
@@ -1089,15 +1073,7 @@ Resources:
                   - logs:PutLogEvents
                 Resource:
                   - !Join ["", ["arn:aws:logs:", Ref: "AWS::Region", ":", Ref: "AWS::AccountId", ":log-group:/aws/lambda/*"]]
-              - Sid: AccessOutputStream
-                Effect: Allow
-                Action:
-                - kinesis:GetRecords
-                - kinesis:GetShardIterator
-                - kinesis:DescribeStream
-                - kinesis:ListStreams
-                Resource:
-                - !GetAtt OutputStream.Arn
+
 
   ProcessMetricsFunction:
     Type: AWS::Lambda::Function
@@ -1119,25 +1095,16 @@ Resources:
         Variables:
           METRIC_TABLE: !Ref MetricTable
           METRIC_DETAILS_TABLE: !Ref MetricDetailsTable
-          PULL_FROM_STREAMS: 'Y'
+          PULL_FROM_STREAMS: 'N'
 
-      Description: Solution Accelerator for Web Analytics - Function to process metrics.
+      Description: Function for processing records coming from Kinesis Data Analytics and storing in DynamoDB
       Handler: index.handler
       MemorySize: 1600
       Role: !GetAtt ProcessMetricsLambdaRole.Arn
       Runtime: nodejs6.10
       Timeout: 300
 
-  ProcessEventSourceMapping:
-    Type: AWS::Lambda::EventSourceMapping
-    Properties:
-      BatchSize: 100
-      Enabled: true
-      EventSourceArn: !GetAtt OutputStream.Arn
-      FunctionName: !GetAtt ProcessMetricsFunction.Arn
-      StartingPosition: 'LATEST'
-
-# Lambda Cloudwatch Metrics Publishing Function
+  # Lambda Cloudwatch Metrics Publishing Function
   PublishMetricsLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -1328,7 +1295,7 @@ Resources:
                   - dynamodb:PutItem
                 Resource:
                   - !GetAtt MetricTable.Arn
-  
+
   CustomResourceHelper:
     Type: AWS::Lambda::Function
     Properties:
@@ -1366,7 +1333,7 @@ Resources:
       Role: !GetAtt 'CustomResourceHelperRole.Arn'
       Runtime: nodejs6.10
       Timeout: 300
-  
+
   GenerateUUID:
     Type: Custom::LoadLambda
     Properties:

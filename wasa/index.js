@@ -109,7 +109,7 @@ exports.handler = (event, context, callback) => {
             });
         });
     });
-    callback(null, "done");
+    callback(null, { records : event.records.map((record) => { return { recordId : record.recordId, result : 'Ok' }; })});
 };
 
 function upsert(metricTypeSet, allMetrics) {
