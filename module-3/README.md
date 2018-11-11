@@ -26,7 +26,7 @@ If you haven't completed modules 1 and 2, you can simply create a new stack from
 
 ![Update Stack](../images/2-update-stack.png)
 
-4.  Select the **Specify an Amazon S3 template URL** radio button, then copy/paste `https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/3-cloudwatch-dashboard-update.yaml` into the field below it:
+4.  Select the **Specify an Amazon S3 template URL** radio button, then copy/paste `https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/3-publish-metrics-update.yaml` into the field below it:
 
 ![S3 Template](../images/module-3-s3template.png)
 

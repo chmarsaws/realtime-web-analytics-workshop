@@ -17,26 +17,24 @@ If you have already completed module #1, you can update the existing stack with 
 <details>
 <summary><strong>1.A Update CloudFormation Stack from Module #1 (expand for details)</strong></summary><p>
 
-1.	Navigate to the CloudFormation service in the AWS Console.
-2.  Check the box for the stack called `realtime-analytics-workshop`.
 
-![Select Stack](../images/2-select-stack.png)
+1.	Right click the **Launch Stack** link below and "open in new tab"
 
-3.  Click Actions and Update Stack from the menu.
+Region| Launch
+------|-----
+EU (Ireland) | [![Launch Module 1 in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/2-kinesis-analytics-module-update.yaml)
+US West (Oregon) | [![Launch Module 1 in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/2-kinesis-analytics-module-update.yaml)
+US West (N. Virginia) | [![Launch Module 1 in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/2-kinesis-analytics-module-update.yaml)
 
-![Update Stack](../images/2-update-stack.png)
+2.	Click **Next** on the Select Template page.
 
-4.  Select the **Specify an Amazon S3 template URL** radio button, and copy/paste `https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/2-kinesis-analytics-module-start.yaml` into the field below it.
+![Configuring CloudFormation Stack](../images/module-1-next.png)
 
-![Choose File](../images/2-choose-file.png)
+3.	Click **Next**.
+4.	Click **Next** Again. (skipping IAM advanced section)
+5.	On the Review page, check the box to acknowledge that CloudFormation will create IAM resources and click **Create**.
 
-5.  Click **Next**.
-6.  Click **Next**.
-7.  Check the box indicating acknowledgement that the stack will create IAM Roles.
-
-![Ack IAM](../images/2-capabilities-iam.png)
-
-8.  Click the **Update** button in the lower right.
+![iam-accept](../images/iam-accept.png)
 
 </p></details>
 
@@ -61,19 +59,17 @@ If you sucessfully completed Module 1, **skip this section**. Otherwise, you can
 
 Region| Launch
 ------|-----
-US West (Oregon) | [![Launch Module 2 in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/2-kinesis-analytics-module-start.yaml)
-US West (N. Virginia) | [![Launch Module 2 in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/2-kinesis-analytics-module-start.yaml)
+EU (Ireland) | [![Launch Module 2 in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/2-kinesis-analytics-module-completed.yaml)
+US West (Oregon) | [![Launch Module 2 in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/2-kinesis-analytics-module-completed.yaml)
+US West (N. Virginia) | [![Launch Module 2 in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/2-kinesis-analytics-module-completed.yaml)
 
 2.	Click **Next** on the Select Template page.
-3.	**(Optional)** If you'd like to login to the web servers, select an **SSH Keypair** for this region, select True next to **Enable SSH**, and enter a CIDR block such as `0.0.0.0/0` next to **Enable SSH From**. If you don't have a key pair already created, see ([Creating a key pair using amazon EC2](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair))
-
-![Configuring SSH access](../images/module-1-ssh.png)
 
 ![Configuring CloudFormation Stack](../images/module-1-next.png)
 
-4.	Click **Next**.
-5.	Click **Next** Again. (skipping IAM advanced section)
-6.	On the Review page, check the box to acknowledge that CloudFormation will create IAM resources and click **Create**.
+3.	Click **Next**.
+4.	Click **Next** Again. (skipping IAM advanced section)
+5.	On the Review page, check the box to acknowledge that CloudFormation will create IAM resources and click **Create**.
 
 ![iam-accept](../images/iam-accept.png)
 
@@ -113,6 +109,23 @@ In this step we are going to manually add the SQL and destination stream in Kine
 
 <details>
 <summary><strong>Create In-Application Destination Stream (expand for code)</strong></summary>
+
+**Leave the existing SQL** in the editor, and add the following SQL code **at the beginning** to add the stream that will be used for the destination.
+
+```SQL
+CREATE STREAM "DESTINATION_SQL_STREAM"(
+    MetricType VARCHAR(16),
+    EventTimestamp BIGINT,
+    MetricItem VARCHAR(1024),
+    UnitValueInt BIGINT,
+    UnitValueFloat DOUBLE);
+```
+
+8.  Click **Save and run SQL**
+</details>
+
+<details>
+<summary><strong>Connect the output to the Lambda processing function (expand for details)</strong></summary>
 
 **Leave the existing SQL** in the editor, and add the following SQL code **at the beginning** to add the stream that will be used for the destination.
 

@@ -78,7 +78,7 @@ In this scenario, you will leverage Amazon S3, Amazon EC2 Linux Instances, AutoS
 
 Amazon Kinesis Data Analyitics makes it easy to process streaming data in real time with standard SQL.  In this module you will create a Kinesis analytics application and use SQL on streaming data to generate metrics in real time that provide insights into current activies on your web site.  Those metrics will be normaized and emitted to a Lambda function which delivers the data to a DynamoDB table.  
 
-![Module 2 Architecture](images/2-overview-with-stream.png)
+![Module 2 Architecture](images/module-2.png)
 
 In this scenario, you will leverage Amazon Kinesis Data Analytics, AWS Lambda, and Amazon DynamoDB.
 
