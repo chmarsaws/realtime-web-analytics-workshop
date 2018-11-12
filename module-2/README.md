@@ -128,22 +128,6 @@ CREATE STREAM "DESTINATION_SQL_STREAM"(
 8.  Click **Save and run SQL**
 </details>
 
-<details>
-<summary><strong>Connect the output to the Lambda processing function (expand for details)</strong></summary>
-
-9. Click on the **Destination** tab then the **Connect to destination** button to configure destinations
-10. Select Lambda as the output type.
-
-![Select Source](../images/2-10.png)
-11. Select the **stack name**-ProcessMetricsFunction-**random** function name.
-![Select Source](../images/2-11.png)
-12. Choose the existing in-application stream DESTINATION_SQL_STREAM and JSON output.
-![Select Source](../images/2-12.png)
-13. Select the **stack name**-KinesisAnalyticsRole-**random** role and click the **Save and continue** button.  If the role is already selected and the button is greyed out you may need to select the role again.  
-![Select Source](../images/2-13.png)
-
-</details>
-
 ## 3. Inspect the real-time analytics for the application  
 
 Now that your Kinesis application in running, let's review the data that is flowing through the application.  
@@ -153,27 +137,26 @@ Now that your Kinesis application in running, let's review the data that is flow
 
 2. Next click on the **Real-time analytics** tab.  Here you will see the streams created in the SQL window populated by the in-application pumps.  Keep in mind that these "streams" are referred to as in-application streams and are different than Kinesis Data Streams.  Eventually the console will refresh with a sampling of data for these based on what is selected under In-application streams.  Be aware that the console does a sampling of data that flows through the streams and does not display all the records as they flow through.  Also notice that the last stream is **error_stream** which is created automatically for every application.  If there are errors encountered based on the interaction between the data and the SQL they would be output to the error_stream.
 
-3. Finally, click on the **Destination** tab.  Here you will see that the CloudFormation template connected the DESTINATION_SQL_STREAM to a Kinesis Data Stream.
+![Realtime Analytics](../images/2-realtime-analytics.png)
 
-## 4. Configure the Kinesis Data Stream as a trigger for Lambda
+## 4. Connect Output to Lambda Processing Function
 
 <details>
 <summary><strong>Configure the Process Metrics Fuction in Lambda (expand for details) </strong></summary><p>
 
-1. Navigate to Lambda in the AWS console and select the **stack name**-ProcessMetricsFunction-**random** function.  
-2. In the **Designer** section select Kinesis as a trigger.  
+1. Click on the **Destination** tab then the **Connect to destination** button to configure destinations
 
-![Select Kinesis](../images/2-add-kinesis-stream.png)
+![Select Source](../images/2-connect-destination.png)
 
-5. Scroll down to the **Configure triggers** section.  
+2. Select Lambda as the output type.
 
-6. Select the **stack name**-OutputStream stream as the stream to listen on then click **Add** leaving the defaults of 100 for Batch size and Latest for starting position.
-
-![Configure triggers](../images/2-add-kinesis-stream2.png)
-
-7. To save your changes click the **Save** button for the Lambda configuration.
-
-![Save Lambda Changes](../images/2-add-kinesis-stream-save.png)
+![Select Source](../images/2-10.png)
+3. Select the **stack name**-ProcessMetricsFunction-**random** function name.
+![Select Source](../images/2-11.png)
+4. Choose the existing in-application stream DESTINATION_SQL_STREAM and JSON output.
+![Select Source](../images/2-12.png)
+5. Select the **stack name**-KinesisAnalyticsRole-**random** role and click the **Save and continue** button.  If the role is already selected and the button is greyed out you may need to select the role again.  
+![Select Source](../images/2-13.png)
 
 </details>  
 
