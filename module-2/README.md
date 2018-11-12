@@ -18,23 +18,27 @@ If you have already completed module #1, you can update the existing stack with 
 <summary><strong>1.A Update CloudFormation Stack from Module #1 (expand for details)</strong></summary><p>
 
 
-1.	Right click the **Launch Stack** link below and "open in new tab"
 
-Region| Launch
-------|-----
-EU (Ireland) | [![Launch Module 1 in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/2-kinesis-analytics-module-update.yaml)
-US West (Oregon) | [![Launch Module 1 in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/2-kinesis-analytics-module-update.yaml)
-US West (N. Virginia) | [![Launch Module 1 in ](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/images/cloudformation-launch-stack-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=realtime-analytics-workshop&templateURL=https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/2-kinesis-analytics-module-update.yaml)
+1.	Navigate to the CloudFormation service in the AWS Console.
+2.  Check the box for the stack called `realtime-analytics-workshop`.
 
-2.	Click **Next** on the Select Template page.
+![Select Stack](../images/2-select-stack.png)
 
-![Configuring CloudFormation Stack](../images/module-1-next.png)
+3.  Click Actions and Update Stack from the menu.
 
-3.	Click **Next**.
-4.	Click **Next** Again. (skipping IAM advanced section)
-5.	On the Review page, check the box to acknowledge that CloudFormation will create IAM resources and click **Create**.
+![Update Stack](../images/2-update-stack.png)
 
-![iam-accept](../images/iam-accept.png)
+4.  Select the **Specify an Amazon S3 template URL** radio button, and copy/paste `https://s3-us-west-2.amazonaws.com/realtime-analytics-workshop/2-kinesis-analytics-module-update.yaml` into the field below it.
+
+![Choose File](../images/2-choose-file.png)
+
+5.  Click **Next**.
+6.  Click **Next**.
+7.  Check the box indicating acknowledgement that the stack will create IAM Roles.
+
+![Ack IAM](../images/2-capabilities-iam.png)
+
+8.  Click the **Update** button in the lower right.
 
 </p></details>
 
