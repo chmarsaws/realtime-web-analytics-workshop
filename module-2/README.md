@@ -88,7 +88,7 @@ Your stack will take a few minutes to deploy.  When the status for the stack cha
 In this step we are going to manually add the SQL and destination stream in Kinesis Analytics through the console.  This is to allow you to get familiar with Kinesis Analyitics and see the effects of modifying SQL and inspecting the in application streams.  
 
 <details>
-<summary><strong>Update the SQL (expand for details)</strong></summary><p>
+<summary><strong>Start the application and update the SQL (expand for details)</strong></summary><p>
 
 1.  Select the Kinesis service in the AWS Console.
 2.  Locate the Kinesis analytics applications list you created through CloudFormation which will be prepended with your stack name.  By default it will be named realtime-analytics-workshop-WebMetricsApplication.
