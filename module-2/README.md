@@ -151,11 +151,11 @@ Now that your Kinesis application in running, let's review the data that is flow
 2. Select Lambda as the output type.
 
 ![Select Source](../images/2-10.png)
-3. Select the **stack name**-ProcessMetricsFunction-**random** function name.
+3. Select the `realtime-analytics-workshop-ProcessMetricsFunction-...` function name.
 ![Select Source](../images/2-11.png)
 4. Choose the existing in-application stream DESTINATION_SQL_STREAM and JSON output.
 ![Select Source](../images/2-12.png)
-5. Select the **stack name**-KinesisAnalyticsRole-**random** role and click the **Save and continue** button.  If the role is already selected and the button is greyed out you may need to select the role again.  
+5. Select the `realtime-analytics-workshop-KinesisAnalyticsRole-...` role and click the **Save and continue** button.  If the role is already selected and the button is greyed out you may need to select the role again.  
 ![Select Source](../images/2-13.png)
 
 </details>  
@@ -165,8 +165,8 @@ Now that your Kinesis application in running, let's review the data that is flow
 <details>
 <summary><strong>Review Completed Steps (expand for details) </strong></summary><p>  
 
-You should now have data flowing through the pipeline into the **stack-name**-MetricDetails DynamoDB table based on writes completed from the **stack name**-ProcessMetricsFunction-**random** function.
-To validate this, review the items written to the **stack name**-Metrics and **stack name**-MetricDetails DynamoDB tables.
+You should now have data flowing through the pipeline into the `realtime-analytics-workshop-MetricDetails` DynamoDB table based on writes completed from the `realtime-analytics-workshop-ProcessMetricsFunction-...` function.
+To validate this, review the items written to the `realtime-analytics-workshop-Metrics` and `realtime-analytics-workshop-MetricDetails` DynamoDB tables.
 Navigate to DyanmoDB in the console and select the Items tab.  The **LastEventTimstamp** data should be updated to a non-zero number indicating that the Processing Lambda function is receiving and processing records.  
 
 ![Configure triggers](../images/2-dynamo.png)

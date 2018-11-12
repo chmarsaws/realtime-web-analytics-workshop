@@ -48,7 +48,7 @@ AWS Lambda functions require a trigger, or event source that will invoke the fun
 <summary><strong>DynamoDB Streams Trigger Configuration (expand for details)</strong></summary><p>
 
 1.  Open Lambda inside the AWS console, and find the function that called `realtime-analytics-workshop-PublishMetricsFunction...` (or the name you selected when creating it) and click on it.  On the **Configuration** screen, you'll need to click on **DynamoDB** in the **Designer** underneath **Add triggers**:
-
+(Ensure you are selecting the **Publish**MetricFunction and not the ProcessMetricsFunction.)
 ![Create Lambda function 2](../images/module-3-lambda2.png)
 
 2.  You'll notice that the DynamoDB trigger we just added says "Configuration required" in an informational bubble.  Scroll down to the **Configure triggers** section and select `realtime-analytics-MetricDetails` as the **DynamoDB table**.  Enter `300` for **Batch size**, and select `Trim Horizon` under **Starting Position**.  Click the **Add** button.

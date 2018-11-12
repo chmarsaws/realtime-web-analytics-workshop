@@ -273,6 +273,8 @@ In this section you will execute a python script that posts http header data to 
 
 4.  The python script, `test-beacon.py` is located in the `module-1/` folder in the GitHub repository that you should have checked out.  If you have trouble locating it, you can also find it ([here.](test-beacon.py))  Open a terminal or command window, navigate to the folder that contains the test-beacon.py script and execute the command.  If the post messages are sent successfully to the load balancer, you should see an incrementing count in the terminal window.  You can leave this running for the rest of the workshop.
 
+
+
 <details>
 <summary><strong>Example Command (expand for details)</strong></summary>
 
@@ -291,6 +293,10 @@ Or, assuming you checked out the GitHub repository to your home directory:
 *  The first parameter is the address for the load balancer.  Your DNS entry will be different than the example here.
 *  The second parameter is the number of requests to send before ending the script.  In this case the script will simulate 20,000 web requests.
 *  The last parameter is the number of seconds to delay between sending requests.  Using these values the script should generate data for over two hours.
+
+Note: if you get an error indicating a module is not installed such as **requests** you can install it locally using:
+
+`pip install requests -t .`
 
 </details>
 

@@ -1170,12 +1170,8 @@ Resources:
           region= environ['AWS_REGION']
 
           DynamoDBClient = boto3.client('dynamodb', region_name=region)
-          allMetrics = DynamoDBClient.scan(
-          TableName=tablename,
-          Select='ALL_ATTRIBUTES'
-          )
 
-          def isWholeNumber(metric_type):
+          def isWholeNumber(metric_type, allMetrics):
             for metric_meta in allMetrics['Items']:
               if metric_meta['MetricType']['S'] == metric_type:
                 return metric_meta['IsWholeNumber']['BOOL'] == True
@@ -1188,6 +1184,7 @@ Resources:
             return pretty
 
           def lambda_handler(event, context):
+            allMetrics = DynamoDBClient.scan(TableName=tablename,Select='ALL_ATTRIBUTES')
             for record in event['Records']:
               metricData = []
               try:
@@ -1196,7 +1193,7 @@ Resources:
                 event_time = datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%dT%H:%M:%S')
                 print('event_time=' + event_time)
                 metric_type =  record['dynamodb']['NewImage']['MetricType']['S']
-                is_metric_int = isWholeNumber(metric_type)
+                is_metric_int = isWholeNumber(metric_type, allMetrics)
                 for metric_detail in record['dynamodb']['NewImage']['MetricDetails']['L']:
                   if is_metric_int:
                     value = float(metric_detail['M']['UNITVALUEINT']['N'])

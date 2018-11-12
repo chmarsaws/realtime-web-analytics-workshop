@@ -47,8 +47,8 @@ This code is just an example of what would be added to your measured website.  F
 <details>
 <summary><strong>Add the Metric to the DynamoDB Table (expand for details)</strong></summary><p>    
 
-The Lambda processing function reads from the DynamoDB **stack-name**-Metric table to determine how to process metrics that are persisted to the MetricDetails table.  In this example you will add a metric that captures the average load time for all captured pages on the target website.  
-The DynamoDB table named **stack-name**-Metrics initially contains seven items representing different metrics.  Each item contains the following information is required for each metric type:
+The Lambda processing function reads from the DynamoDB `realtime-analytics-workshop-Metrics` table to determine how to process metrics that are persisted to the MetricDetails table.  In this example you will add a metric that captures the average load time for all captured pages on the target website.  
+The DynamoDB table named `realtime-analytics-workshop-Metrics` initially contains seven items representing different metrics.  Each item contains the following information is required for each metric type:
 *   **MetricType** - a primary partition key to identity the metric
 *   **AmendmentStrategy** - this is a field to indicate how to late arriving records for an existing event time. Valid values are [add | replace | replace_existing].  **add** combines the values of the existing item and the new item, **replace** replaces the metric in DynamoDB with the newly arrived item, **replace_existing** only replaces the matching metrics in the set of metrics in the item.  
 *   **IsSet** - indicates if the detail item contains one or more metric items [true | false]. 
@@ -56,7 +56,7 @@ The DynamoDB table named **stack-name**-Metrics initially contains seven items r
 *   **LastEventTimestamp** - this is an integer field used to track the latest metrics.  
 
 1.  Navigate to DynamoDB in the console, select **Tables** from the left side menu.
-2.  Select the radio button to select the **stack-name**-Metrics table. 
+2.  Select the radio button to select the `realtime-analytics-workshop-Metrics` table. 
 3.  Click the Items tab to see the seven default metrics.
 4.  Click the **Create item** button to add a new item.
 5.  Enter **avg_pg_ld** in the String field for the MetricType.  
@@ -65,6 +65,7 @@ The DynamoDB table named **stack-name**-Metrics initially contains seven items r
 ![Append Item](../images/4-insert-item.png)
 
 7.  Use the same method and append **IsSet** Boolean : false, **IsWholeNumber** Boolean : true, **LatestEventTimestamp** Number : 0 
+
 Note: Ensure you select the type **Boolean** and not Binary. 
 
 ![Append Item Fields](../images/4-insert-item-fields.png)
@@ -124,6 +125,10 @@ Then execute the script replacing the **BEACONURL** with the ELB for your pipeli
     python generate-load-times.py <BEACONURL> 10000 0.5
 ```
 
+Note: if you get an error indicating a module is not installed such as **requests** you can install it locally using:
+
+`pip install requests -t .`
+
 </details>
 
 
@@ -163,7 +168,7 @@ SELECT
 ```
 Notes:
 *   The inner SQL statement selects all (and only) records that have the custom metric name **page_load_time**.  All of these are averaged across the window and put into the 'All Pages' MetricItem. You could also group by other attributes such as **page**, **User-Agent**, etc. and put that in MetricItem to track results by these attributes. 
-*   The GROUP BY time based steps used in this workshop have both steps for **ROWTIME** and the event time as captured by **weblogs."datetime"**.  The statement **STEP (weblogs.ROWTIME BY INTERVAL '60' SECOND)** creates a one minute tumbling window where only one record is output per minute based on all the records received by Kinesis Data Analytics that match the select criteria. ROWTIME is created by Kinesis Data Analytics when it puts the row into the first in-application stream.  The second STEP uses the data received from the logs on the web servers to align the group by.  Typically there will be a one-to-one match between the ROWTIME and datetime.  However, in some cases the source producer could run behind in sending data to Kinesis.  For example, if the Kinesis Agent was to be updated on one server it may get more than a minute behind then send the weblogs later than other servers.  In this case the amendment strategy would determine what to do with the new data for the metric already recorded.  This additional complexity may be more suited to handle IoT scenarios where client producers may be less reliable and timely than identical web servers in the same region.  
+*   The GROUP BY time based steps used in this workshop have both steps for **ROWTIME** and the event time as captured by **weblogs."datetime"**.  The statement **STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND)** creates a ten second tumbling window where only one record is output per minute based on all the records received by Kinesis Data Analytics that match the select criteria. ROWTIME is created by Kinesis Data Analytics when it puts the row into the first in-application stream.  The second STEP uses the data received from the logs on the web servers to align the group by.  Typically there will be a one-to-one match between the ROWTIME and datetime.  However, in some cases the source producer could run behind in sending data to Kinesis.  For example, if the Kinesis Agent was to be updated on one server it may get more than a minute behind then send the weblogs later than other servers.  In this case the amendment strategy would determine what to do with the new data for the metric already recorded.  This additional complexity may be more suited to handle IoT scenarios where client producers may be less reliable and timely than identical web servers in the same region.  
 
 
 </details>
