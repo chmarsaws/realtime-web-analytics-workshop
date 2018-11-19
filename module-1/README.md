@@ -273,6 +273,7 @@ In this section you will execute a python script that posts http header data to 
 
 4.  The python script, `test-beacon.py` is located in the `module-1/` folder in the GitHub repository that you should have checked out.  If you have trouble locating it, you can also find it ([here.](test-beacon.py))  Open a terminal or command window, navigate to the folder that contains the test-beacon.py script and execute the command.  If the post messages are sent successfully to the load balancer, you should see an incrementing count in the terminal window.  You can leave this running for the rest of the workshop.
 
+Note: If you get an error from Python about not having requests installed you can install it locaally using: `pip install requests -t .`
 
 
 <details>
