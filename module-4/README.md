@@ -175,6 +175,9 @@ SELECT
         STEP (CHAR_TO_TIMESTAMP('dd/MMM/yyyy:HH:mm:ssz',weblogs."datetime") by INTERVAL '10' SECOND)
     ); 
 ```
+
+5. Click **Save and run SQL** to save the modified Kinesis Data Analytics application.
+
 Notes:
 *   The inner SQL statement selects all (and only) records that have the custom metric name **page_load_time**.  All of these are averaged across the window and put into the 'All Pages' MetricItem. You could also group by other attributes such as **page**, **User-Agent**, etc. and put that in MetricItem to track results by these attributes. 
 *   The GROUP BY time based steps used in this workshop have both steps for **ROWTIME** and the event time as captured by **weblogs."datetime"**.  The statement **STEP (weblogs.ROWTIME BY INTERVAL '10' SECOND)** creates a ten second tumbling window where only one record is output per minute based on all the records received by Kinesis Data Analytics that match the select criteria. ROWTIME is created by Kinesis Data Analytics when it puts the row into the first in-application stream.  The second STEP uses the data received from the logs on the web servers to align the group by.  Typically there will be a one-to-one match between the ROWTIME and datetime.  However, in some cases the source producer could run behind in sending data to Kinesis.  For example, if the Kinesis Agent was to be updated on one server it may get more than a minute behind then send the weblogs later than other servers.  In this case the amendment strategy would determine what to do with the new data for the metric already recorded.  This additional complexity may be more suited to handle IoT scenarios where client producers may be less reliable and timely than identical web servers in the same region.  
@@ -192,14 +195,12 @@ Navigate to CloudWatch Metrics and select the new Metric **AvgPgLd** and create 
 
 </details>
 
-
 ### Next Steps
 
-If you have made it to this point in the Workshop you are a real time analytics ninja, unicorn, or both.  Congratulations! Here are some useful next steps to even more value out of the solution.  
-*   Create a Glue Crawler pointing it to the S3 bucket being populated by the Kinesis Firehose delivery stream.  Run the crawler and create a table with partitions in the Glue Data Catalog.  Select the table in AWS Glue and select **Action** then **View data** to run queries on the data in S3 using Athena.  You can also now query this data from within EMR or Redshift Spectrum using the external table created in the Glue Data Catalog.
+If you have made it to this point in the Workshop you are a real time analytics ninja, unicorn, or both.  Congratulations! Here are some useful next steps to get even more value out of the solution.  
+*   Create a Glue Crawler pointing at the S3 bucket being populated by the Kinesis Firehose delivery stream.  Run the crawler and create a table with partitions in the Glue Data Catalog.  Select the table in AWS Glue and select **Action** then **View data** to run queries on the data in S3 using Athena.  You can also now query this data from within EMR or Redshift Spectrum using the external table created in the Glue Data Catalog.
 *   Update the average page load time metric to also include the page where the load time was generated. You will change the IsSet in the Metrics table to true.  Also change the SQL to select the page name for MetricItem instead of using 'All Pages'.
 *   Create a notification email when the event_anomaly score exceeds a threshold of 2.0.  Create a new **stream** in SQL that will contain the anomaly records.  Copy the existing ANOMALY_EVENT_PUMP statement and add it back with a new name.  Change the stream that is being inserted into to the anomaly stream just created.  Add a WHERE clause to only emit events that are sufficiently anomalous **WHERE AnomalyScore > 2.0**.  Create a Lambda function that sends an SNS message to a topic that is subscribed to by SES. Create a new destination in your Kinesis application for your anomaly stream and connect it to the Lambda function.  The data generated from the **test-becon.py** script is random but evenly distributed across the possible values.  The anomaly detection functionality will identify this normal pattern and therefore likely emit a score lower than 2.0.  To create an anomaly run the **click-burst.py** script which will elevate the click count for 3 minutes elevating the anomaly scores.
-
 
 ## License Summary
 
