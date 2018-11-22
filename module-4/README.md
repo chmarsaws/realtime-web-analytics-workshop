@@ -79,7 +79,10 @@ Note:
 *   The metric type **avg_pg_ld** is different than the custom metric name **page_load_time** which is what gets sent into the beacon servers.  The SQL in the Kinesis application uses the page load time values to calculate the average page load times over a one minute window and emits the average.
 </details>
 
-To simulate page load times you will execute a Python script similar to the **test-beacon.py** script you used earlier.  You can find the script below in the `module-4` folder under the repository that you cloned in module 1.  If you'd like to view the code, expand the 
+<details>
+<summary><strong>Simulate page load times by executing a Python script (expand for details)</strong></summary>
+
+To simulate page load times you will execute a Python script similar to the **test-beacon.py** script you used earlier.  You can find the script below in the `module-4` folder under the repository that you cloned in module 1.  The python script is also visible below.
 
 <details>
 <summary><strong>Python Script (expand for code)</strong></summary><p>  
@@ -120,11 +123,6 @@ while (i < int(args.calls)):
 ```
 
 </details>
-
-9. Execute the following commands to generate simulated load times with the python script:
-
-<details>
-<summary><strong>Example Command (expand for details)</strong></summary>
 
 If you are using the Cloud9 environment your repository was checked out underneath an `environment` subdirectory:
 ```bash
