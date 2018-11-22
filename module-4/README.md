@@ -57,14 +57,14 @@ The DynamoDB table named `realtime-analytics-workshop-Metrics` initially contain
 
 1.  Navigate to DynamoDB in the console, select **Tables** from the left side menu.
 2.  Select the radio button to select the `realtime-analytics-workshop-Metrics` table. 
-3.  Click the Items tab to see the seven default metrics.
+3.  Click the **Items** tab to see the seven default metrics.
 4.  Click the **Create item** button to add a new item.
 5.  Enter **avg_pg_ld** in the String field for the MetricType.  
-6.  Click the plus (+) on the left and select Append and String. For FIELD, enter **AmendmentStrategy** and for value enter **replace**  
+6.  Click the plus (+) on the left and select Append and String. For FIELD, enter `AmendmentStrategy` and for value enter `replace`  
 
 ![Append Item](../images/4-insert-item.png)
 
-7.  Use the same method and append **IsSet** Boolean : false, **IsWholeNumber** Boolean : true, **LatestEventTimestamp** Number : 0 
+7.  Use the same method and append `IsSet`, Boolean : `false`, `IsWholeNumber`, Boolean : `true`, `LatestEventTimestamp`, Number : `0` 
 
 Note: Ensure you select the type **Boolean** and not Binary. 
 
@@ -76,14 +76,13 @@ Note:
 *   We are using the replace amendment strategy which means that if a subsequent average comes in for the same event time window which has already been received, the new value will be used. 
 *   We are using a single value for all cases for each time window indicated by IsSet: false.  If we wanted to break out additional data such as browser type, page, etc. we could instead use a set with different SQL in the Kinesis application.
 *   We are using IsWholeNumber: true since the metric value we will be using is the average number of milliseconds in whole milliseconds.  
-*   The metric type **avg_pg_ld** is differnt than the custom metric name **page_load_time** which is what gets sent into the beacon servers.  The SQL in the Kinesis application uses the page load time values to calculate the average page load times over a one minute window and emits the average.
+*   The metric type **avg_pg_ld** is different than the custom metric name **page_load_time** which is what gets sent into the beacon servers.  The SQL in the Kinesis application uses the page load time values to calculate the average page load times over a one minute window and emits the average.
 </details>
 
-<details>
-<summary><strong>Simulate Load Times via Python Script (expand for details)</strong></summary><p>  
+To simulate page load times you will execute a Python script similar to the **test-beacon.py** script you used earlier.  You can find the script below in the `module-4` folder under the repository that you cloned in module 1.  If you'd like to view the code, expand the 
 
-To simulate page load times you will create a Python script similar to the **test-beacon.py** script you used earlier.  
-Open a text editor and add the following:  
+<details>
+<summary><strong>Python Script (expand for code)</strong></summary><p>  
 
 ```python
 # Usage
@@ -119,18 +118,30 @@ while (i < int(args.calls)):
     sys.stdout.flush()
     i+=1
 ```
-Then execute the script replacing the **BEACONURL** with the ELB for your pipeline:  
 
+</details>
+
+9. Execute the following commands to generate simulated load times with the python script:
+
+<details>
+<summary><strong>Example Command (expand for details)</strong></summary>
+
+If you are using the Cloud9 environment your repository was checked out underneath an `environment` subdirectory:
 ```bash
-    python generate-load-times.py <BEACONURL> 10000 0.5
+  cd ~/environment/realtime-web-analytics-workshop/module-4/
+  python ./test-beacon.py http://<loadbalancer>.us-east-1.elb.amazonaws.com/beacon 10000 0.5
+```
+
+Or, assuming you checked out the GitHub repository to your home directory:
+```bash
+  cd ~/realtime-web-analytics-workshop/module-4/
+  python ./test-beacon.py http://<loadbalancer>.us-east-1.elb.amazonaws.com/beacon 10000 0.5
 ```
 
 Note: if you get an error indicating a module is not installed such as **requests** you can install it locally using:
 
 `pip install requests -t .`
-
 </details>
-
 
 <details>
 <summary><strong>Create SQL to calculate average page load (expand for details)</strong></summary><p>    

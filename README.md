@@ -24,7 +24,8 @@ To get started with this fun and educational workshop, simply clone this reposit
 
 ### AWS Cloud9 Environment Setup Instructions
 
-1.  Navigate in the AWS console to **Services**, then select **Cloud9**.  Be sure that you have either the **US East (N. Virginia)** or the **US West (Oregon)** region selected before you proceed to the next step.
+1.  Navigate in the AWS console to **Services**, then select **Cloud9**.  Be sure that you have either the **US East (N. Virginia)**, **US West (Oregon)**, or **EU West (Ireland)** region selected before you proceed to the next step.
+
 2.  Click the **Create Environment** button:
 
 ![Cloud9 Create Environment](images/cloud9-create-environment.png)
