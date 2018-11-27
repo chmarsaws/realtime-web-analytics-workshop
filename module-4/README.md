@@ -127,13 +127,13 @@ while (i < int(args.calls)):
 If you are using the Cloud9 environment your repository was checked out underneath an `environment` subdirectory:
 ```bash
   cd ~/environment/realtime-web-analytics-workshop/module-4/
-  python ./test-beacon.py http://<loadbalancer>.us-east-1.elb.amazonaws.com/beacon 10000 0.5
+  python ./generate-load-times.py http://<loadbalancer>.us-east-1.elb.amazonaws.com/beacon 10000 0.5
 ```
 
 Or, assuming you checked out the GitHub repository to your home directory:
 ```bash
   cd ~/realtime-web-analytics-workshop/module-4/
-  python ./test-beacon.py http://<loadbalancer>.us-east-1.elb.amazonaws.com/beacon 10000 0.5
+  python ./generate-load-times.py http://<loadbalancer>.us-east-1.elb.amazonaws.com/beacon 10000 0.5
 ```
 
 Note: if you get an error indicating a module is not installed such as **requests** you can install it locally using:
