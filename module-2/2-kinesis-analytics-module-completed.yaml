@@ -1100,7 +1100,7 @@ Resources:
       Handler: index.handler
       MemorySize: 1600
       Role: !GetAtt ProcessMetricsLambdaRole.Arn
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
       Timeout: 300
 
 # Helper Functions
@@ -1197,7 +1197,7 @@ Resources:
       Handler: index.handler
       MemorySize: 256
       Role: !GetAtt 'CustomResourceHelperRole.Arn'
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
       Timeout: 300
   
   GenerateUUID:

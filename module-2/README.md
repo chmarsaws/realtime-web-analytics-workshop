@@ -102,7 +102,7 @@ In this step we are going to manually add the SQL and destination stream in Kine
 
 ![Click Start Application](../images/2-start-application.png)
 
-7.  In the SQL editor you will be creating a new stream to collect the output of the other streams and it be used as the output stream for the application. The stream will be named DESTINATION_SQL_STREAM and contain the following columns:
+7.  In the SQL editor you will be creating a new stream to collect the output of the other streams and it will be used as the output stream for the application. The stream will be named DESTINATION_SQL_STREAM and contain the following columns:
     *   MetricType VARCHAR(16),
     *   EventTimestamp BIGINT,
     *   MetricItem VARCHAR(1024),
