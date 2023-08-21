@@ -1,5 +1,10 @@
 # AWS Realtime Web Analytics Workshop
 
+------
+>  #### ⚠️This example is obsolete. Please refer to [Amazon Managed Service for Apache Flink](https://aws.amazon.com/managed-service-apache-flink) for more up to date solutions and examples.
+
+------
+
 ## Introduction
 
 Knowing what users are doing on your web sites in realtime gives you insights you can act on without having to wait for delayed batch processing of clickstream data.  There are many use cases for evaluating web traffic analytics in realtime: watching the immediate impact to user behavior after new releases, detecting and responding to anomalies, situational awareness, and evaluating trends are all benefits of having realtime web site analytics.
